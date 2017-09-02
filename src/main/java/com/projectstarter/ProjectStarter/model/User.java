@@ -1,5 +1,8 @@
 package com.projectstarter.ProjectStarter.model;
 
+import com.projectstarter.ProjectStarter.model.enums.BlockStatus;
+import com.projectstarter.ProjectStarter.model.enums.Role;
+
 import javax.persistence.*;
 import java.sql.Date;
 
@@ -10,17 +13,15 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "email")
     private String email;
 
-    @Column(name = "password")
     private String password;
 
     @OneToOne()
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "biography_id")
     private Biography biography;
 
-    @Column(name = "role")
+
     @Enumerated(EnumType.STRING)
     private Role role;
 

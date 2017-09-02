@@ -21,7 +21,7 @@ public class MainController {
     @ResponseStatus(value = HttpStatus.OK)
     public User findUser() {
         //return userService.findUserByEmail("tsyulialisa@gmail.com");
-        return userService.findUserById(2L);
+        return userService.findUserById(1L);
     }
 
 }

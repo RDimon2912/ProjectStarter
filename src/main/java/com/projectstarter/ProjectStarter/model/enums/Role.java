@@ -1,4 +1,4 @@
-package com.projectstarter.ProjectStarter.model;
+package com.projectstarter.ProjectStarter.model.enums;
 
 public enum Role {
     ROLE_ANONYMOUS,
