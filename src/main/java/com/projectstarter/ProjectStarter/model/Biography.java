@@ -1,7 +1,4 @@
 package com.projectstarter.ProjectStarter.model;
-
-import jdk.nashorn.internal.objects.annotations.Getter;
-
 import javax.persistence.*;
 
 @Entity
@@ -12,13 +9,10 @@ public class Biography {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "name")
     private String name;
 
-    @Column(name = "biography")
     private String biography;
 
-    @Column(name = "location")
     private String location;
 
     @Column(name = "image_url")
