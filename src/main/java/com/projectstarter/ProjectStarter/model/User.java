@@ -16,8 +16,9 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "biography_id")
-    private Long biographyId;
+    @OneToOne()
+    @JoinColumn(name = "id")
+    private Biography biography;
 
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
@@ -54,12 +55,12 @@ public class User {
         this.password = password;
     }
 
-    public Long getBiographyId() {
-        return biographyId;
+    public Biography getBiography() {
+        return biography;
     }
 
-    public void setBiographyId(Long biographyId) {
-        this.biographyId = biographyId;
+    public void setBiography(Biography biography) {
+        this.biography = biography;
     }
 
     public Role getRole() {

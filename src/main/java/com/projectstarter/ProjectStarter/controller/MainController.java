@@ -20,7 +20,8 @@ public class MainController {
     @GetMapping
     @ResponseStatus(value = HttpStatus.OK)
     public User findUser() {
-        return userService.findUserByEmail("tsyulialisa@gmail.com");
+        //return userService.findUserByEmail("tsyulialisa@gmail.com");
+        return userService.findUserById(2L);
     }
 
 }
