@@ -7,10 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-/**
- * @author i.katlinsky
- * @since 21.07.2016
- */
 public class RestAccessDeniedHandler implements AccessDeniedHandler {
     private static final String DENIED_MESSAGE = "Sorry, you don't have required permission for this operation.";
 

@@ -10,10 +10,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * @author ikatlinsky
- * @since 5/12/17
- */
 @Getter
 public class JwtUserDetails implements UserDetails {
 

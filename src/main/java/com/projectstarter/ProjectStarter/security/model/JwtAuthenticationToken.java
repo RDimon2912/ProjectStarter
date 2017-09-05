@@ -8,10 +8,6 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
 
-/**
- * @author ikatlinsky
- * @since 5/12/17
- */
 public class JwtAuthenticationToken implements Authentication {
 
     private final JwtUserDetails userDetails;
