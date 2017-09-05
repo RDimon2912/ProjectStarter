@@ -1,6 +1,8 @@
 package com.projectstarter.ProjectStarter.service;
 
 import com.projectstarter.ProjectStarter.model.User;
+import com.projectstarter.ProjectStarter.model.enums.BlockStatus;
+import com.projectstarter.ProjectStarter.model.enums.Role;
 import com.projectstarter.ProjectStarter.repository.UserRepository;
 import com.projectstarter.ProjectStarter.security.SecurityHelper;
 import com.projectstarter.ProjectStarter.security.model.JwtUserDetails;
@@ -81,4 +83,19 @@ public class AuthenticationService {
 
         return authUserTransformer.makeDto(byUsername);
     }
+
+//    @Transactional()
+//    public LoginResponseDto temp(final LoginRequestDto loginRequestDto) {
+//        System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+//
+//        User user = new User();
+//        user.setEmail(loginRequestDto.getUsername());
+//        user.setPassword(loginRequestDto.getPassword());
+//        user.setBlockStatus(BlockStatus.ACTIVE);
+//        user.setRole(Role.ROLE_USER);
+//
+//        userRepository.save(user);
+//
+//        return new LoginResponseDto("1111111");
+//    }
 }

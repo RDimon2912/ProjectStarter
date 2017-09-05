@@ -2,26 +2,41 @@ package com.projectstarter.ProjectStarter.model;
 
 import com.projectstarter.ProjectStarter.model.enums.BlockStatus;
 import com.projectstarter.ProjectStarter.model.enums.Role;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.jboss.logging.Field;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.sql.Date;
 
 @Entity
 @Table(name = "users")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private Long id;
 
+    @NotNull
+    @Column(name = "email")
     private String email;
 
+    @NotNull
+    @Column(name = "password")
     private String password;
 
     @OneToOne()
     @JoinColumn(name = "biography_id")
     private Biography biography;
 
-
+    @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -31,60 +46,4 @@ public class User {
 
     @Column(name = "last_log_in")
     private Date lastLogIn;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Biography getBiography() {
-        return biography;
-    }
-
-    public void setBiography(Biography biography) {
-        this.biography = biography;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public BlockStatus getBlockStatus() {
-        return blockStatus;
-    }
-
-    public void setBlockStatus(BlockStatus blockStatus) {
-        this.blockStatus = blockStatus;
-    }
-
-    public Date getLastLogIn() {
-        return lastLogIn;
-    }
-
-    public void setLastLogIn(Date lastLogIn) {
-        this.lastLogIn = lastLogIn;
-    }
 }

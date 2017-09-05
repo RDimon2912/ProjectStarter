@@ -1,22 +1,30 @@
 package com.projectstarter.ProjectStarter.model;
 
-import com.projectstarter.ProjectStarter.model.enums.AchivmentName;
+import com.projectstarter.ProjectStarter.model.enums.AchievementName;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.sql.Date;
 
 @Entity
 @Table(name = "achivments")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Achivment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private Long id;
 
-    @Column(name = "achivment_name")
+    @Column(name = "achievement_name")
     @Enumerated(EnumType.STRING)
-    private AchivmentName achivmentName;
+    private AchievementName achievementName;
 
+    @Column(name = "date")
     private Date date;
 
     @ManyToOne
