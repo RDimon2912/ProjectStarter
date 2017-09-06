@@ -24,14 +24,6 @@ public class AuthenticationController {
         return authenticationService.login(loginRequestDto);
     }
 
-//    @PostMapping(value = "/temp")
-//    @ResponseStatus(value = HttpStatus.OK)
-//    public LoginResponseDto temp(
-//            @RequestBody final LoginRequestDto loginRequestDto
-//    ) {
-//        return authenticationService.temp(loginRequestDto);
-//    }
-
     @GetMapping(value = "/me")
     @ResponseStatus(value = HttpStatus.OK)
     public AuthUserDto me() {

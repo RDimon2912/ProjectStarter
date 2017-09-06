@@ -15,20 +15,15 @@ import java.sql.Date;
 @NoArgsConstructor
 public class Goal {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private Project project;
 
     @Column(name = "amount")
     private int amount;
 
     @Column(name = "date")
     private Date date;
-
-    @ManyToOne
-    @JoinColumn(name = "project_id")
-    private Project project;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)

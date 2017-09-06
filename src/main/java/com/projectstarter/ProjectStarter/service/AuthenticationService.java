@@ -32,6 +32,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthenticationService {
 
+    private final UserService userService;
+
     private final UserRepository userRepository;
     private final AuthUserTransformer authUserTransformer;
     private final AuthenticationHelper authenticationHelper;
@@ -84,18 +86,15 @@ public class AuthenticationService {
         return authUserTransformer.makeDto(byUsername);
     }
 
-//    @Transactional()
-//    public LoginResponseDto temp(final LoginRequestDto loginRequestDto) {
-//        System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-//
-//        User user = new User();
-//        user.setEmail(loginRequestDto.getUsername());
-//        user.setPassword(loginRequestDto.getPassword());
-//        user.setBlockStatus(BlockStatus.ACTIVE);
-//        user.setRole(Role.ROLE_USER);
-//
-//        userRepository.save(user);
-//
-//        return new LoginResponseDto("1111111");
-//    }
+    @Transactional()
+    public LoginResponseDto temp(final LoginRequestDto loginRequestDto) {
+        System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+
+        User user = userService.findByEmail(loginRequestDto.getUsername());
+        user.setPassword(loginRequestDto.getPassword());
+
+        userService.save(user);
+
+        return new LoginResponseDto("1111111");
+    }
 }

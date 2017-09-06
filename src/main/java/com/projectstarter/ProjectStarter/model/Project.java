@@ -6,10 +6,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.util.Date;
 
 @Entity
-@Table(name = "manual")
+@Table(name = "projects")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -39,7 +39,7 @@ public class Project {
     @Column(name = "current_amount")
     private int currentAmount;
 
-    @Column(name = "current_amount")
+    @Column(name = "rating")
     private double rating;
 
     @Column(name = "start_date")

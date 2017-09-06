@@ -9,16 +9,15 @@ import javax.persistence.*;
 import java.sql.Date;
 
 @Entity
-@Table(name = "achivments")
+@Table(name = "achievements")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Achivment {
+public class Achievement {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Column(name = "achievement_name")
     @Enumerated(EnumType.STRING)
@@ -26,8 +25,4 @@ public class Achivment {
 
     @Column(name = "date")
     private Date date;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
 }
