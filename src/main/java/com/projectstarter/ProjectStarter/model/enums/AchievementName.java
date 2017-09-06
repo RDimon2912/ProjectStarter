@@ -1,5 +1,5 @@
 package com.projectstarter.ProjectStarter.model.enums;
 
-public enum AchivmentName {
+public enum AchievementName {
     THREE_COMMENTS
 }
