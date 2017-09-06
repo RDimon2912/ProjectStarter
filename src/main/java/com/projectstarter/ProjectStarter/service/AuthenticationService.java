@@ -85,5 +85,5 @@ public class AuthenticationService {
 
         return authUserTransformer.makeDto(byUsername);
     }
-    
+
 }
