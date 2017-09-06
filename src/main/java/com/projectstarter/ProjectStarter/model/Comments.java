@@ -13,6 +13,11 @@ import java.sql.Date;
 @Setter
 @NoArgsConstructor
 public class Comments {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+    private Long id;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

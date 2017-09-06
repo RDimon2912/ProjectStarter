@@ -12,6 +12,11 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 public class DonateSystem {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+    private Long id;
+
     @ManyToOne
     @JoinColumn(name = "project_id")
     private Project project;

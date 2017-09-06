@@ -85,16 +85,5 @@ public class AuthenticationService {
 
         return authUserTransformer.makeDto(byUsername);
     }
-
-    @Transactional()
-    public LoginResponseDto temp(final LoginRequestDto loginRequestDto) {
-        System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-
-        User user = userService.findByEmail(loginRequestDto.getUsername());
-        user.setPassword(loginRequestDto.getPassword());
-
-        userService.save(user);
-
-        return new LoginResponseDto("1111111");
-    }
+    
 }
