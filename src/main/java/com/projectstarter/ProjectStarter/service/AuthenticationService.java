@@ -22,6 +22,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.SendFailedException;
 import javax.mail.internet.MimeMessage;
 import java.util.Objects;
 import java.util.Optional;
@@ -106,14 +107,16 @@ public class AuthenticationService {
                 throw new JsonException("Email is already in use.");
             }
 
-            User newUser = userService.create(username, password, email);
-            userService.save(newUser);
-
             try {
-                sendEmail(newUser.getEmail());
+                sendEmail(email);
+            } catch (SendFailedException e) {
+                throw new JsonException("Email address is incorrect.");
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+            User newUser = userService.create(username, password, email);
+            userService.save(newUser);
 
             String token = this.authenticationHelper.
                     generateToken(userService.findByEmail(newUser.getEmail()).getId());
