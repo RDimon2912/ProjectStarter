@@ -2,6 +2,7 @@ package com.projectstarter.ProjectStarter.security.service;
 
 import com.projectstarter.ProjectStarter.security.handler.RestAuthenticationFailureHandler;
 import com.projectstarter.ProjectStarter.security.model.JwtAuthenticationToken;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.event.InteractiveAuthenticationSuccessEvent;
@@ -10,6 +11,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 
+import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

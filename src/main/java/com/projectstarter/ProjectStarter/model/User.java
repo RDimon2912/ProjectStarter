@@ -2,20 +2,17 @@ package com.projectstarter.ProjectStarter.model;
 
 import com.projectstarter.ProjectStarter.model.enums.BlockStatus;
 import com.projectstarter.ProjectStarter.model.enums.Role;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.jboss.logging.Field;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.sql.Date;
+import java.util.Date;
 
 @Entity
 @Table(name = "users")
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
@@ -46,4 +43,10 @@ public class User {
 
     @Column(name = "last_log_in")
     private Date lastLogIn;
+
+    @Column(name = "registration_date")
+    private Date registrationDate;
+
+    @Column(name = "confirmed")
+    private boolean confirmed;
 }

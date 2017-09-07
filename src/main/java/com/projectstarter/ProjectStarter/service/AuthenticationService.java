@@ -47,13 +47,13 @@ public class AuthenticationService {
 
     public LoginResponseDto login(final LoginRequestDto loginRequestDto) {
         try {
-            String username = Optional.ofNullable(loginRequestDto.getUsername())
+            String email = Optional.ofNullable(loginRequestDto.getUsername())
                     .orElseThrow(() -> new BadCredentialsException("Username should be passed."));
 
             String password = Optional.ofNullable(loginRequestDto.getPassword())
                     .orElseThrow(() -> new BadCredentialsException("Password should be passed."));
 
-            UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(username,
+            UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(email,
                     password);
 
             // Try to authenticate with this token
@@ -66,6 +66,8 @@ public class AuthenticationService {
                 User user = userRepository.findOne(userDetails.getId());
                 if (Objects.isNull(user)) {
                     throw new JsonException("User not exist in system.");
+                } else if (!user.isConfirmed()) {
+                    throw new JsonException("Email is not confirmed.");
                 }
 
                 String token = this.authenticationHelper.generateToken(userDetails.getId());
@@ -91,7 +93,10 @@ public class AuthenticationService {
         return authUserTransformer.makeDto(byUsername);
     }
 
-    public RegistrationResponseDto register(RegistrationRequestDto registrationRequestDto) {
+    public RegistrationResponseDto register(
+            RegistrationRequestDto registrationRequestDto,
+            String appUrl
+    ) {
         try {
             String username = Optional.ofNullable(registrationRequestDto.getUsername())
                     .orElseThrow(() -> new BadCredentialsException("Username should be passed."));
@@ -107,31 +112,40 @@ public class AuthenticationService {
                 throw new JsonException("Email is already in use.");
             }
 
-            try {
-                sendEmail(email);
-            } catch (SendFailedException e) {
-                throw new JsonException("Email address is incorrect.");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
             User newUser = userService.create(username, password, email);
             userService.save(newUser);
 
             String token = this.authenticationHelper.
                     generateToken(userService.findByEmail(newUser.getEmail()).getId());
 
+            try {
+                sendEmail(newUser, appUrl, token);
+            } catch (SendFailedException e) {
+                throw new JsonException("Email address is incorrect.");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             return new RegistrationResponseDto(token);
         } catch (BadCredentialsException exception) {
             throw new JsonException("Unable to register. Please try again.", exception);
         }
     }
-    private void sendEmail(String email) throws Exception {
+
+    private void sendEmail(User user, String appUrl, String token) throws Exception {
         MimeMessage message = sender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
-        helper.setTo(email);
-        helper.setText("Congratulations!!! Now you are registered at our ProjectStarter application!");
-        helper.setSubject("ProjectStarter");
+        helper.setTo(user.getEmail());
+        helper.setSubject("ProjectStarter registration confirmation");
+        helper.setText("Hi " + user.getBiography().getName() + ",\n\n" +
+                        "To confirm your e-mail address, please click the link below:\n" +
+                        appUrl + "/registration/confirm?token=" + token +
+                        "&email=" + user.getEmail());
         sender.send(message);
+    }
+
+    public RegistrationResponseDto confirm(String email) {
+        userService.confirm(userService.findByEmail(email));
+        return new RegistrationResponseDto(email);
     }
 }

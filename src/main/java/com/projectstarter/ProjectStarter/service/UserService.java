@@ -13,7 +13,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,17 +35,29 @@ public class UserService {
     @Transactional()
     public void save(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (user.getRegistrationDate() == null) {
+            user.setRegistrationDate(new Date());
+        }
         userRepository.save(user);
     }
 
-    public User create(String username, String password, String email) {
+    @Transactional()
+    public void confirm(User user) {
+        user.setConfirmed(true);
+        userRepository.save(user);
+    }
+
+    public User create(String name, String password, String email) {
         User newUser = new User();
+
         newUser.setPassword(password);
         newUser.setRole(Role.ROLE_USER);
         newUser.setEmail(email);
         newUser.setBlockStatus(BlockStatus.ACTIVE);
+        newUser.setConfirmed(false);
+
         Biography biography = new Biography();
-        biography.setName(username);
+        biography.setName(name);
         biographyRepository.save(biography);
         newUser.setBiography(biography);
         return newUser;
