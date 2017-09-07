@@ -12,6 +12,9 @@ import com.projectstarter.ProjectStarter.security.service.AuthenticationHelper;
 import com.projectstarter.ProjectStarter.service.dto.*;
 import com.projectstarter.ProjectStarter.service.transformer.AuthUserTransformer;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +22,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.SendFailedException;
+import javax.mail.internet.MimeMessage;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -31,8 +36,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthenticationService {
 
+    @Autowired
+    private JavaMailSender sender;
+
     private final UserService userService;
-    private final BiographyRepository biographyRepository;
     private final UserRepository userRepository;
     private final AuthUserTransformer authUserTransformer;
     private final AuthenticationHelper authenticationHelper;
@@ -100,6 +107,14 @@ public class AuthenticationService {
                 throw new JsonException("Email is already in use.");
             }
 
+            try {
+                sendEmail(email);
+            } catch (SendFailedException e) {
+                throw new JsonException("Email address is incorrect.");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             User newUser = userService.create(username, password, email);
             userService.save(newUser);
 
@@ -110,5 +125,13 @@ public class AuthenticationService {
         } catch (BadCredentialsException exception) {
             throw new JsonException("Unable to register. Please try again.", exception);
         }
+    }
+    private void sendEmail(String email) throws Exception {
+        MimeMessage message = sender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+        helper.setTo(email);
+        helper.setText("Congratulations!!! Now you are registered at our ProjectStarter application!");
+        helper.setSubject("ProjectStarter");
+        sender.send(message);
     }
 }
