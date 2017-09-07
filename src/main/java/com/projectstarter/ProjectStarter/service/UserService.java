@@ -1,6 +1,10 @@
 package com.projectstarter.ProjectStarter.service;
 
+import com.projectstarter.ProjectStarter.model.Biography;
 import com.projectstarter.ProjectStarter.model.User;
+import com.projectstarter.ProjectStarter.model.enums.BlockStatus;
+import com.projectstarter.ProjectStarter.model.enums.Role;
+import com.projectstarter.ProjectStarter.repository.BiographyRepository;
 import com.projectstarter.ProjectStarter.repository.UserRepository;
 import com.projectstarter.ProjectStarter.service.dto.UserListDto;
 import com.projectstarter.ProjectStarter.service.transformer.UserListTransformer;
@@ -22,6 +26,7 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final BiographyRepository biographyRepository;
     private final UserListTransformer userListTransformer;
     private final PasswordEncoder passwordEncoder;
 
@@ -29,6 +34,19 @@ public class UserService {
     public void save(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
+    }
+
+    public User create(String username, String password, String email) {
+        User newUser = new User();
+        newUser.setPassword(password);
+        newUser.setRole(Role.ROLE_USER);
+        newUser.setEmail(email);
+        newUser.setBlockStatus(BlockStatus.ACTIVE);
+        Biography biography = new Biography();
+        biography.setName(username);
+        biographyRepository.save(biography);
+        newUser.setBiography(biography);
+        return newUser;
     }
 
     @Transactional(readOnly = true)

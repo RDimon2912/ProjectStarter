@@ -1,16 +1,15 @@
 package com.projectstarter.ProjectStarter.service;
 
+import com.projectstarter.ProjectStarter.model.Biography;
 import com.projectstarter.ProjectStarter.model.User;
 import com.projectstarter.ProjectStarter.model.enums.BlockStatus;
 import com.projectstarter.ProjectStarter.model.enums.Role;
+import com.projectstarter.ProjectStarter.repository.BiographyRepository;
 import com.projectstarter.ProjectStarter.repository.UserRepository;
 import com.projectstarter.ProjectStarter.security.SecurityHelper;
 import com.projectstarter.ProjectStarter.security.model.JwtUserDetails;
 import com.projectstarter.ProjectStarter.security.service.AuthenticationHelper;
-import com.projectstarter.ProjectStarter.service.dto.AuthUserDto;
-import com.projectstarter.ProjectStarter.service.dto.JsonException;
-import com.projectstarter.ProjectStarter.service.dto.LoginRequestDto;
-import com.projectstarter.ProjectStarter.service.dto.LoginResponseDto;
+import com.projectstarter.ProjectStarter.service.dto.*;
 import com.projectstarter.ProjectStarter.service.transformer.AuthUserTransformer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,7 +32,7 @@ import java.util.Optional;
 public class AuthenticationService {
 
     private final UserService userService;
-
+    private final BiographyRepository biographyRepository;
     private final UserRepository userRepository;
     private final AuthUserTransformer authUserTransformer;
     private final AuthenticationHelper authenticationHelper;
@@ -82,8 +81,34 @@ public class AuthenticationService {
     public AuthUserDto getMe() {
         Authentication authentication = SecurityHelper.getAuthenticationWithCheck();
         User byUsername = userRepository.findByEmail(authentication.getName());
-
         return authUserTransformer.makeDto(byUsername);
     }
 
+    public RegistrationResponseDto register(RegistrationRequestDto registrationRequestDto) {
+        try {
+            String username = Optional.ofNullable(registrationRequestDto.getUsername())
+                    .orElseThrow(() -> new BadCredentialsException("Username should be passed."));
+
+            String password = Optional.ofNullable(registrationRequestDto.getPassword())
+                    .orElseThrow(() -> new BadCredentialsException("Password should be passed."));
+
+            String email = Optional.ofNullable(registrationRequestDto.getEmail())
+                    .orElseThrow(() -> new BadCredentialsException("Email should be passed."));
+
+            User user = userRepository.findByEmail(email);
+            if (!Objects.isNull(user)) {
+                throw new JsonException("Email is already in use.");
+            }
+
+            User newUser = userService.create(username, password, email);
+            userService.save(newUser);
+
+            String token = this.authenticationHelper.
+                    generateToken(userService.findByEmail(newUser.getEmail()).getId());
+
+            return new RegistrationResponseDto(token);
+        } catch (BadCredentialsException exception) {
+            throw new JsonException("Unable to register. Please try again.", exception);
+        }
+    }
 }
