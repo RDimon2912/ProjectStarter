@@ -46,4 +46,7 @@ public class User {
 
     @Column(name = "last_log_in")
     private Date lastLogIn;
+
+    @Column(name = "registration_date")
+    private Date registrationDate;
 }
