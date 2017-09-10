@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -25,14 +27,12 @@ public class ProjectService {
 
     public ProjectCreateResponseDto create(ProjectCreateRequestDto projectCreateRequestDto) {
         Project project = new Project();
-
         project.setTitle(projectCreateRequestDto.getTitle());
+        project.setStartDate(new Date());
 
-        System.out.println(project);
-//        project = projectRepository.saveAndFlush(project);
+        project = projectRepository.saveAndFlush(project);
 
-        return new ProjectCreateResponseDto(1L);
-//        return new ProjectCreateResponseDto(project.getId());
+        return new ProjectCreateResponseDto(project.getId());
     }
 
 //    public Project create(String name, String password, String email) {
