@@ -1,6 +1,7 @@
 package com.projectstarter.ProjectStarter.service;
 
 import com.projectstarter.ProjectStarter.model.Project;
+import com.projectstarter.ProjectStarter.model.User;
 import com.projectstarter.ProjectStarter.model.enums.ProjectStatus;
 import com.projectstarter.ProjectStarter.repository.ProjectRepository;
 import com.projectstarter.ProjectStarter.service.dto.ProjectCreateRequestDto;
@@ -20,6 +21,7 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final ProjectTransformer projectTransformer;
+    private final UserService userService;
 
     public Project save(Project project) {
         return projectRepository.save(project);
@@ -31,6 +33,11 @@ public class ProjectService {
 
     public ProjectCreateResponseDto create(ProjectCreateRequestDto projectCreateRequestDto) {
         Project project = new Project();
+
+        User user = new User();
+        user.setId(projectCreateRequestDto.getUserId());
+        project.setUser(user);
+
         project.setTitle(projectCreateRequestDto.getTitle());
         project.setStartDate(new Date((new java.util.Date()).getTime()));
         project.setStatus(ProjectStatus.IN_PROGRESS);
