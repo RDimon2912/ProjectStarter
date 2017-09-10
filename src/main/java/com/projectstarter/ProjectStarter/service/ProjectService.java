@@ -1,14 +1,17 @@
 package com.projectstarter.ProjectStarter.service;
 
 import com.projectstarter.ProjectStarter.model.Project;
+import com.projectstarter.ProjectStarter.model.enums.ProjectStatus;
 import com.projectstarter.ProjectStarter.repository.ProjectRepository;
 import com.projectstarter.ProjectStarter.service.dto.ProjectCreateRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.ProjectCreateResponseDto;
+import com.projectstarter.ProjectStarter.service.dto.ProjectDto;
+import com.projectstarter.ProjectStarter.service.transformer.ProjectTransformer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.sql.Date;
 
 @Service
 @Transactional
@@ -16,6 +19,7 @@ import java.util.Date;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final ProjectTransformer projectTransformer;
 
     public Project save(Project project) {
         return projectRepository.save(project);
@@ -28,17 +32,16 @@ public class ProjectService {
     public ProjectCreateResponseDto create(ProjectCreateRequestDto projectCreateRequestDto) {
         Project project = new Project();
         project.setTitle(projectCreateRequestDto.getTitle());
-        project.setStartDate(new Date());
+        project.setStartDate(new Date((new java.util.Date()).getTime()));
+        project.setStatus(ProjectStatus.IN_PROGRESS);
 
         project = projectRepository.saveAndFlush(project);
 
         return new ProjectCreateResponseDto(project.getId());
     }
 
-//    public Project create(String name, String password, String email) {
-//        Project newProject = new Project();
-//
-//        return newProject;
-//    }
-
+    public ProjectDto findProject(Long projectId) {
+        Project project = projectRepository.findById(projectId);
+        return projectTransformer.makeDto(project);
+    }
 }

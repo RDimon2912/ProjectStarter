@@ -4,10 +4,7 @@ import com.projectstarter.ProjectStarter.model.User;
 import com.projectstarter.ProjectStarter.service.dto.UserListDto;
 import org.springframework.stereotype.Component;
 
-/**
- * @author ikatlinsky
- * @since 5/12/17
- */
+
 @Component
 public class UserListTransformer {
 
