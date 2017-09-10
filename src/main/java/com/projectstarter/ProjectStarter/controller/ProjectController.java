@@ -5,6 +5,7 @@ import com.projectstarter.ProjectStarter.service.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,12 +15,13 @@ public class ProjectController {
 
     private final ProjectService projectService;
 
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping(value = "/create")
     @ResponseStatus(value = HttpStatus.OK)
-    public LoginResponseDto create(
-            @RequestBody final LoginRequestDto loginRequestDto
+    public ProjectCreateResponseDto create(
+            @RequestBody final ProjectCreateRequestDto projectCreateRequestDto
     ) {
-        return projectService.login(loginRequestDto);
+        return projectService.create(projectCreateRequestDto);
     }
 }
 
