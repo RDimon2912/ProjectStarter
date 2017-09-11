@@ -40,6 +40,14 @@ public class AdminController {
     public boolean blockSomeUsers(
             @RequestBody final BlockDto blockDto
     ) {
-        return userService.block(blockDto);
+            return userService.block(blockDto);
+    }
+
+    @PostMapping(value = "/unblock")
+    @ResponseStatus(value = HttpStatus.OK)
+    public boolean unblockSomeUsers(
+            @RequestBody final BlockDto unblockDto
+    ) {
+        return userService.unblock(unblockDto);
     }
 }

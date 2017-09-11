@@ -78,9 +78,20 @@ public class UserService {
     @Transactional()
     public boolean block(BlockDto blockDto) {
         for (String email:
-             blockDto.emails) {
+                blockDto.emails) {
             User curUser = userRepository.findByEmail(email);
             curUser.setBlockStatus(BlockStatus.BLOCKED);
+            userRepository.save(curUser);
+        }
+        return true;
+    }
+
+    @Transactional()
+    public boolean unblock(BlockDto unblockDto) {
+        for (String email:
+                unblockDto.emails) {
+            User curUser = userRepository.findByEmail(email);
+            curUser.setBlockStatus(BlockStatus.ACTIVE);
             userRepository.save(curUser);
         }
         return true;
