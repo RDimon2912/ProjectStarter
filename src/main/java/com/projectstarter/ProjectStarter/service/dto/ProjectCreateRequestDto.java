@@ -1,5 +1,6 @@
 package com.projectstarter.ProjectStarter.service.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -7,10 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class LoginResponseDto implements Dto {
-    private String token;
-
-    public LoginResponseDto(final String token) {
-        this.token = token;
-    }
+@AllArgsConstructor
+public class ProjectCreateRequestDto implements Dto {
+    private String title;
+    private Long userId;
 }

@@ -1,17 +1,9 @@
 package com.projectstarter.ProjectStarter.service.transformer;
 
 import com.projectstarter.ProjectStarter.model.User;
-import com.projectstarter.ProjectStarter.model.enums.BlockStatus;
-import com.projectstarter.ProjectStarter.model.enums.Role;
 import com.projectstarter.ProjectStarter.service.dto.UserListDto;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-
-/**
- * @author ikatlinsky
- * @since 5/12/17
- */
 @Component
 public class UserListTransformer {
 

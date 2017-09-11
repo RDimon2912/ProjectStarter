@@ -4,14 +4,8 @@ import com.projectstarter.ProjectStarter.model.enums.BlockStatus;
 import com.projectstarter.ProjectStarter.model.enums.Role;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.util.Date;
 
-/**
- * Dto for user list item.
- * @author d.krivenky
- * @since 27.08.2016
- */
 @Getter
 @Setter
 public class UserListDto implements Dto {

@@ -12,14 +12,23 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.projectstarter.ProjectStarter.model.User;
+import com.projectstarter.ProjectStarter.model.enums.ProjectStatus;
+import com.projectstarter.ProjectStarter.service.dto.ProjectCreateRequestDto;
+import com.projectstarter.ProjectStarter.service.dto.ProjectCreateResponseDto;
+import com.projectstarter.ProjectStarter.service.dto.ProjectDto;
+import com.projectstarter.ProjectStarter.service.transformer.ProjectTransformer;
+
+import java.sql.Date;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class ProjectService {
 
-    @Autowired
-    private ProjectRepository projectRepository;
+    private final ProjectRepository projectRepository;
+    private final ProjectTransformer projectTransformer;
+    private final UserService userService;
 
     @Autowired
     private ProjectListTransformer projectListTransformer;
@@ -38,4 +47,42 @@ public class ProjectService {
         return projectListDto;
     }
 
+
+
+    public Project save(Project project) {
+        return projectRepository.save(project);
+    }
+
+    public Project saveAndFlush(Project project) {
+        return projectRepository.saveAndFlush(project);
+    }
+
+    public ProjectCreateResponseDto create(ProjectCreateRequestDto projectCreateRequestDto) {
+        Project project = new Project();
+
+        User user = new User();
+        user.setId(projectCreateRequestDto.getUserId());
+        project.setUser(user);
+
+        project.setTitle(projectCreateRequestDto.getTitle());
+        project.setStartDate(new Date((new java.util.Date()).getTime()));
+        project.setStatus(ProjectStatus.IN_PROGRESS);
+
+        project = projectRepository.saveAndFlush(project);
+
+        return new ProjectCreateResponseDto(project.getId());
+    }
+
+    public ProjectDto findProject(Long projectId) {
+        Project project = projectRepository.findById(projectId);
+        return projectTransformer.makeDto(project);
+    }
+
+    public ProjectDto update(ProjectDto projectDto) {
+        Project project = projectTransformer.makeObject(projectDto);
+
+        project = projectRepository.saveAndFlush(project);
+
+        return projectTransformer.makeDto(project);
+    }
 }

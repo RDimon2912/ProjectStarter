@@ -7,10 +7,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class LoginResponseDto implements Dto {
-    private String token;
+public class ProjectCreateResponseDto {
+    private Long project_id;
 
-    public LoginResponseDto(final String token) {
-        this.token = token;
+    public ProjectCreateResponseDto(final Long project_id) {
+        this.project_id = project_id;
     }
 }

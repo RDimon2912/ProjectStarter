@@ -15,10 +15,6 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.Objects;
 
-/**
- * @author ikatlinsky
- * @since 5/12/17
- */
 @Component
 @RequiredArgsConstructor
 public class AuthenticationHelper {
@@ -50,8 +46,9 @@ public class AuthenticationHelper {
             throw new InvalidTokenAuthenticationException("Token was null or blank.");
         }
 
+        String[] array = token.split(" ");
         // Getting JWT object from string token
-        Jwt jwt = JwtHelper.decode(token);
+        Jwt jwt = JwtHelper.decode(array[array.length - 1]);
 
         // Validate token signature (to be sure that token has not been tampered with)
         try {
