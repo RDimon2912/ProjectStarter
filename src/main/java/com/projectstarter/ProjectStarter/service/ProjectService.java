@@ -51,4 +51,12 @@ public class ProjectService {
         Project project = projectRepository.findById(projectId);
         return projectTransformer.makeDto(project);
     }
+
+    public ProjectDto update(ProjectDto projectDto) {
+        Project project = projectTransformer.makeObject(projectDto);
+
+        project = projectRepository.saveAndFlush(project);
+
+        return projectTransformer.makeDto(project);
+    }
 }

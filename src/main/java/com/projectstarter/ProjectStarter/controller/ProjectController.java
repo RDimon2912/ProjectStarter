@@ -28,5 +28,13 @@ public class ProjectController {
     public ProjectDto findProject(@PathVariable("projectId") Long projectId) {
         return projectService.findProject(projectId);
     }
+
+    @PostMapping(value = "/update")
+    @ResponseStatus(value = HttpStatus.OK)
+    public ProjectDto update(
+            @RequestBody final ProjectDto projectDto
+    ) {
+        return projectService.update(projectDto);
+    }
 }
 
