@@ -37,8 +37,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
         throws IOException, ServletException {
         try {
             // Getting JWT token from request
-            String token = Optional.ofNullable(request.getHeader(AuthenticationHelper.AUTHENTICATION_HEADER))
-                    .map(header -> header.substring(7)).orElse(null);
+            String token = Optional.ofNullable(request.getHeader(AuthenticationHelper.AUTHENTICATION_HEADER)).orElse(null);
 
             if (Objects.isNull(token)) {
                 throw new BadCredentialsException("Token not found in request's header.");

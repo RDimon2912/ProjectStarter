@@ -15,10 +15,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
-/**
- * @author ikatlinsky
- * @since 5/12/17
- */
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationProvider implements AuthenticationProvider {
