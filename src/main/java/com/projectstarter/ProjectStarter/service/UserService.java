@@ -1,12 +1,15 @@
 package com.projectstarter.ProjectStarter.service;
 
 import com.projectstarter.ProjectStarter.model.Biography;
+import com.projectstarter.ProjectStarter.model.Project;
 import com.projectstarter.ProjectStarter.model.User;
 import com.projectstarter.ProjectStarter.model.enums.BlockStatus;
 import com.projectstarter.ProjectStarter.model.enums.Role;
 import com.projectstarter.ProjectStarter.repository.BiographyRepository;
+import com.projectstarter.ProjectStarter.repository.ProjectRepository;
 import com.projectstarter.ProjectStarter.repository.UserRepository;
 import com.projectstarter.ProjectStarter.service.dto.BlockDto;
+import com.projectstarter.ProjectStarter.service.dto.DeleteDto;
 import com.projectstarter.ProjectStarter.service.dto.UserListDto;
 import com.projectstarter.ProjectStarter.service.transformer.UserListTransformer;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +32,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BiographyRepository biographyRepository;
+    private final ProjectRepository projectRepository;
     private final UserListTransformer userListTransformer;
     private final PasswordEncoder passwordEncoder;
 
@@ -93,6 +97,26 @@ public class UserService {
             User curUser = userRepository.findByEmail(email);
             curUser.setBlockStatus(BlockStatus.ACTIVE);
             userRepository.save(curUser);
+        }
+        return true;
+    }
+
+    @Transactional()
+    public boolean delete(DeleteDto deleteDto) {
+        boolean comments = deleteDto.checkboxSettings[0];
+        boolean projects = deleteDto.checkboxSettings[1];
+        boolean ratings = deleteDto.checkboxSettings[2];
+        for (String email:
+                deleteDto.emails) {
+            User curUser = userRepository.findByEmail(email);
+            if (projects) {
+                List<Project> projectList = projectRepository.findAllByUserId(curUser.getId());
+                for (Project project:
+                        projectList) {
+                    projectRepository.delete(project.getId());
+                }
+            }
+            userRepository.delete(curUser);
         }
         return true;
     }

@@ -3,6 +3,7 @@ package com.projectstarter.ProjectStarter.controller;
 import com.projectstarter.ProjectStarter.service.ProjectService;
 import com.projectstarter.ProjectStarter.service.UserService;
 import com.projectstarter.ProjectStarter.service.dto.BlockDto;
+import com.projectstarter.ProjectStarter.service.dto.DeleteDto;
 import com.projectstarter.ProjectStarter.service.dto.ProjectListDto;
 import com.projectstarter.ProjectStarter.service.dto.UserListDto;
 import lombok.RequiredArgsConstructor;
@@ -49,5 +50,13 @@ public class AdminController {
             @RequestBody final BlockDto unblockDto
     ) {
         return userService.unblock(unblockDto);
+    }
+
+    @PostMapping(value = "/delete")
+    @ResponseStatus(value = HttpStatus.OK)
+    public boolean deleteSomeUsers(
+            @RequestBody final DeleteDto deleteDto
+    ) {
+        return userService.delete(deleteDto);
     }
 }
