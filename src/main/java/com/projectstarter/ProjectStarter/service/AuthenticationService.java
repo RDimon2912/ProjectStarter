@@ -1,10 +1,6 @@
 package com.projectstarter.ProjectStarter.service;
 
-import com.projectstarter.ProjectStarter.model.Biography;
 import com.projectstarter.ProjectStarter.model.User;
-import com.projectstarter.ProjectStarter.model.enums.BlockStatus;
-import com.projectstarter.ProjectStarter.model.enums.Role;
-import com.projectstarter.ProjectStarter.repository.BiographyRepository;
 import com.projectstarter.ProjectStarter.repository.UserRepository;
 import com.projectstarter.ProjectStarter.security.SecurityHelper;
 import com.projectstarter.ProjectStarter.security.model.JwtUserDetails;
