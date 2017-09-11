@@ -2,6 +2,7 @@ package com.projectstarter.ProjectStarter.controller;
 
 import com.projectstarter.ProjectStarter.service.ProjectService;
 import com.projectstarter.ProjectStarter.service.UserService;
+import com.projectstarter.ProjectStarter.service.dto.BlockDto;
 import com.projectstarter.ProjectStarter.service.dto.ProjectListDto;
 import com.projectstarter.ProjectStarter.service.dto.UserListDto;
 import lombok.RequiredArgsConstructor;
@@ -32,5 +33,13 @@ public class AdminController {
     @ResponseStatus(value = HttpStatus.OK)
     public List<ProjectListDto> getListOfProjects() {
         return projectService.findAllProjects();
+    }
+
+    @PostMapping(value = "/block")
+    @ResponseStatus(value = HttpStatus.OK)
+    public boolean blockSomeUsers(
+            @RequestBody final BlockDto blockDto
+    ) {
+        return userService.block(blockDto);
     }
 }

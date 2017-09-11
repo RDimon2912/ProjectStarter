@@ -6,6 +6,7 @@ import com.projectstarter.ProjectStarter.model.enums.BlockStatus;
 import com.projectstarter.ProjectStarter.model.enums.Role;
 import com.projectstarter.ProjectStarter.repository.BiographyRepository;
 import com.projectstarter.ProjectStarter.repository.UserRepository;
+import com.projectstarter.ProjectStarter.service.dto.BlockDto;
 import com.projectstarter.ProjectStarter.service.dto.UserListDto;
 import com.projectstarter.ProjectStarter.service.transformer.UserListTransformer;
 import lombok.RequiredArgsConstructor;
@@ -72,5 +73,16 @@ public class UserService {
     @Transactional(readOnly = true)
     public User findById(Long id) {
         return userRepository.findById(id);
+    }
+
+    @Transactional()
+    public boolean block(BlockDto blockDto) {
+        for (String email:
+             blockDto.emails) {
+            User curUser = userRepository.findByEmail(email);
+            curUser.setBlockStatus(BlockStatus.BLOCKED);
+            userRepository.save(curUser);
+        }
+        return true;
     }
 }
