@@ -6,10 +6,6 @@ import com.projectstarter.ProjectStarter.service.dto.AuthUserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-/**
- * @author i.katlinsky
- * @since 22.07.2016
- */
 @Component
 @RequiredArgsConstructor
 public class AuthUserTransformer {

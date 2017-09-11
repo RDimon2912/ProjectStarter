@@ -6,7 +6,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
+import java.sql.Date;
 
 @Entity
 @Table(name = "users")

@@ -22,10 +22,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-/**
- * @author ikatlinsky
- * @since 5/12/17
- */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -33,7 +29,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final String[] allowedUrlsForPost = new String[]{ "/auth/login", "/auth/registration",
-            "/auth/confirm" };
+            "/auth/confirm", "/project/update" };
 
     private final JwtAuthenticationProvider jwtAuthenticationProvider;
     private final UserDetailsService userDetailsService;

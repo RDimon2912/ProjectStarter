@@ -13,9 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 /**
@@ -36,7 +35,7 @@ public class UserService {
     public void save(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         if (user.getRegistrationDate() == null) {
-            user.setRegistrationDate(new Date());
+            user.setRegistrationDate(new Date((new java.util.Date()).getTime()));
         }
         userRepository.save(user);
     }
