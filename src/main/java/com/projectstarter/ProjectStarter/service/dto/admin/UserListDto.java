@@ -1,7 +1,8 @@
-package com.projectstarter.ProjectStarter.service.dto;
+package com.projectstarter.ProjectStarter.service.dto.admin;
 
 import com.projectstarter.ProjectStarter.model.enums.BlockStatus;
 import com.projectstarter.ProjectStarter.model.enums.Role;
+import com.projectstarter.ProjectStarter.service.dto.Dto;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.Date;

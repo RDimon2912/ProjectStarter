@@ -4,7 +4,7 @@ package com.projectstarter.ProjectStarter.service.transformer;
 import com.projectstarter.ProjectStarter.model.Project;
 import com.projectstarter.ProjectStarter.model.User;
 import com.projectstarter.ProjectStarter.model.enums.ProjectStatus;
-import com.projectstarter.ProjectStarter.service.dto.ProjectDto;
+import com.projectstarter.ProjectStarter.service.dto.project.ProjectDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

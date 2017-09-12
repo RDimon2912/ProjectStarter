@@ -1,7 +1,7 @@
 package com.projectstarter.ProjectStarter.service.transformer;
 
 import com.projectstarter.ProjectStarter.model.Project;
-import com.projectstarter.ProjectStarter.service.dto.ProjectListDto;
+import com.projectstarter.ProjectStarter.service.dto.project.ProjectListDto;
 import org.springframework.stereotype.Component;
 
 @Component

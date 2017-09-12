@@ -2,10 +2,10 @@ package com.projectstarter.ProjectStarter.controller;
 
 import com.projectstarter.ProjectStarter.service.ProjectService;
 import com.projectstarter.ProjectStarter.service.UserService;
-import com.projectstarter.ProjectStarter.service.dto.BlockDto;
-import com.projectstarter.ProjectStarter.service.dto.DeleteDto;
-import com.projectstarter.ProjectStarter.service.dto.ProjectListDto;
-import com.projectstarter.ProjectStarter.service.dto.UserListDto;
+import com.projectstarter.ProjectStarter.service.dto.admin.BlockDto;
+import com.projectstarter.ProjectStarter.service.dto.admin.DeleteDto;
+import com.projectstarter.ProjectStarter.service.dto.project.ProjectListDto;
+import com.projectstarter.ProjectStarter.service.dto.admin.UserListDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
