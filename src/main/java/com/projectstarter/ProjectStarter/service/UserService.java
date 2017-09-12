@@ -32,8 +32,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BiographyRepository biographyRepository;
-    private final ProjectRepository projectRepository;
-    private final CommentRepository commentRepository;
     private final UserListTransformer userListTransformer;
     private final PasswordEncoder passwordEncoder;
 
@@ -92,56 +90,4 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    @Transactional()
-    public boolean block(BlockDto blockDto) {
-        for (String email:
-                blockDto.emails) {
-            User curUser = userRepository.findByEmail(email);
-            curUser.setBlockStatus(BlockStatus.BLOCKED);
-            userRepository.save(curUser);
-        }
-        return true;
-    }
-
-    @Transactional()
-    public boolean unblock(BlockDto unblockDto) {
-        for (String email:
-                unblockDto.emails) {
-            User curUser = userRepository.findByEmail(email);
-            curUser.setBlockStatus(BlockStatus.ACTIVE);
-            userRepository.save(curUser);
-        }
-        return true;
-    }
-
-    @Transactional()
-    public boolean delete(DeleteDto deleteDto) {
-        boolean comments = deleteDto.checkboxSettings[0];
-        boolean projects = deleteDto.checkboxSettings[1];
-        boolean ratings = deleteDto.checkboxSettings[2];
-        for (String email:
-                deleteDto.emails) {
-            User curUser = userRepository.findByEmail(email);
-            Long userId = curUser.getId();
-
-            if (!comments) {
-                List<Comments> commentsList = commentRepository.findAllByUserId(userId);
-                for (Comments comment:
-                        commentsList) {
-                    comment.setUser(userRepository.findById(52L));
-                    commentRepository.save(comment);
-                }
-            }
-            if (!projects) {
-                List<Project> projectList = projectRepository.findAllByUserId(userId);
-                for (Project project:
-                        projectList) {
-                    project.setUser(userRepository.findById(52L));
-                    projectRepository.save(project);
-                }
-            }
-            userRepository.delete(curUser);
-        }
-        return true;
-    }
 }
