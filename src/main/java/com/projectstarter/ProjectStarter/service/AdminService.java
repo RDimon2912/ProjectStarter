@@ -10,6 +10,7 @@ import com.projectstarter.ProjectStarter.repository.UserRepository;
 import com.projectstarter.ProjectStarter.service.dto.admin.BlockDto;
 import com.projectstarter.ProjectStarter.service.dto.admin.DeleteDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,7 @@ public class AdminService {
 
 
     @Transactional()
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public boolean block(BlockDto blockDto) {
         for (String email:
                 blockDto.emails) {
@@ -37,6 +39,7 @@ public class AdminService {
     }
 
     @Transactional()
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public boolean unblock(BlockDto unblockDto) {
         for (String email:
                 unblockDto.emails) {
@@ -48,6 +51,7 @@ public class AdminService {
     }
 
     @Transactional()
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public boolean delete(DeleteDto deleteDto) {
         boolean comments = deleteDto.checkboxSettings[0];
         boolean projects = deleteDto.checkboxSettings[1];
