@@ -179,9 +179,6 @@ public class AuthenticationService {
                 throw new JsonException("Authentication failed.");
             }
 
-//            if (!getMe().getUsername().equals(email))
-//                throw new JsonException("It is not your profile.");
-
             Biography biography = biographyRepository.findById(userRepository.findByEmail(email).getBiography().getId());
             biography.setBiography(changeUserDto.getBiography());
             biography.setLocation(changeUserDto.getLocation());
