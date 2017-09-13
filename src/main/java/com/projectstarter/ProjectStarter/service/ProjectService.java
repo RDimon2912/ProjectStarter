@@ -1,22 +1,24 @@
 package com.projectstarter.ProjectStarter.service;
 
 import com.projectstarter.ProjectStarter.model.Project;
+import com.projectstarter.ProjectStarter.model.enums.Role;
 import com.projectstarter.ProjectStarter.repository.ProjectRepository;
-import com.projectstarter.ProjectStarter.service.dto.ProjectListDto;
+import com.projectstarter.ProjectStarter.security.model.JwtUserDetails;
+import com.projectstarter.ProjectStarter.service.dto.*;
 import com.projectstarter.ProjectStarter.service.transformer.ProjectListTransformer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import com.projectstarter.ProjectStarter.model.User;
 import com.projectstarter.ProjectStarter.model.enums.ProjectStatus;
-import com.projectstarter.ProjectStarter.service.dto.ProjectCreateRequestDto;
-import com.projectstarter.ProjectStarter.service.dto.ProjectCreateResponseDto;
-import com.projectstarter.ProjectStarter.service.dto.ProjectDto;
 import com.projectstarter.ProjectStarter.service.transformer.ProjectTransformer;
 
 import java.sql.Date;
@@ -79,6 +81,15 @@ public class ProjectService {
     }
 
     public ProjectDto update(ProjectDto projectDto) {
+        JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        for (GrantedAuthority authoritie : userDetails.getAuthorities()) {
+            if (authoritie.getAuthority().equals(Role.ROLE_CONFIRMED_USER.name()) &&
+                    userDetails.getId() != projectDto.getUserId()) {
+                throw new JsonException("You don't have permission for editing this project.");
+            }
+        }
+
         Project project = projectTransformer.makeObject(projectDto);
 
         project = projectRepository.saveAndFlush(project);
