@@ -23,4 +23,5 @@ public class ProjectDto {
     private Date startDate;
     private Date endDate;
     private String projectStatus;
+    private String imageUrl;
 }
