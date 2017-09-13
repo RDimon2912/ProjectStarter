@@ -2,13 +2,17 @@ package com.projectstarter.ProjectStarter.controller;
 
 import com.projectstarter.ProjectStarter.service.AuthenticationService;
 import com.projectstarter.ProjectStarter.service.dto.*;
+import com.projectstarter.ProjectStarter.service.dto.login.LoginRequestDto;
+import com.projectstarter.ProjectStarter.service.dto.login.LoginResponseDto;
+import com.projectstarter.ProjectStarter.service.dto.registration.ConfirmRequestDto;
+import com.projectstarter.ProjectStarter.service.dto.registration.RegistrationRequestDto;
+import com.projectstarter.ProjectStarter.service.dto.registration.RegistrationResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.websocket.server.PathParam;
 
 @RestController
 @RequestMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)

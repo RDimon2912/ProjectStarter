@@ -1,4 +1,4 @@
-package com.projectstarter.ProjectStarter.service.dto;
+package com.projectstarter.ProjectStarter.service.dto.project;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

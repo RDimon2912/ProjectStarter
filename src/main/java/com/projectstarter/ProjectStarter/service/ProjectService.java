@@ -5,6 +5,7 @@ import com.projectstarter.ProjectStarter.model.enums.Role;
 import com.projectstarter.ProjectStarter.repository.ProjectRepository;
 import com.projectstarter.ProjectStarter.security.model.JwtUserDetails;
 import com.projectstarter.ProjectStarter.service.dto.*;
+import com.projectstarter.ProjectStarter.service.dto.project.ProjectListDto;
 import com.projectstarter.ProjectStarter.service.transformer.ProjectListTransformer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +16,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import com.projectstarter.ProjectStarter.model.User;
 import com.projectstarter.ProjectStarter.model.enums.ProjectStatus;
+import com.projectstarter.ProjectStarter.service.dto.project.ProjectCreateRequestDto;
+import com.projectstarter.ProjectStarter.service.dto.project.ProjectCreateResponseDto;
+import com.projectstarter.ProjectStarter.service.dto.project.ProjectDto;
 import com.projectstarter.ProjectStarter.service.transformer.ProjectTransformer;
 
 import java.sql.Date;

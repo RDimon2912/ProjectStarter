@@ -1,11 +1,12 @@
 package com.projectstarter.ProjectStarter.controller;
 
+import com.projectstarter.ProjectStarter.service.AdminService;
 import com.projectstarter.ProjectStarter.service.ProjectService;
 import com.projectstarter.ProjectStarter.service.UserService;
-import com.projectstarter.ProjectStarter.service.dto.BlockDto;
-import com.projectstarter.ProjectStarter.service.dto.DeleteDto;
-import com.projectstarter.ProjectStarter.service.dto.ProjectListDto;
-import com.projectstarter.ProjectStarter.service.dto.UserListDto;
+import com.projectstarter.ProjectStarter.service.dto.admin.BlockDto;
+import com.projectstarter.ProjectStarter.service.dto.admin.DeleteDto;
+import com.projectstarter.ProjectStarter.service.dto.project.ProjectListDto;
+import com.projectstarter.ProjectStarter.service.dto.admin.UserListDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,8 @@ public class AdminController {
     private UserService userService;
     @Autowired
     private ProjectService projectService;
+    @Autowired
+    private AdminService adminService;
 
     @GetMapping(value = "/list-of-users")
     @ResponseStatus(value = HttpStatus.OK)
@@ -41,7 +44,7 @@ public class AdminController {
     public boolean blockSomeUsers(
             @RequestBody final BlockDto blockDto
     ) {
-            return userService.block(blockDto);
+            return adminService.block(blockDto);
     }
 
     @PostMapping(value = "/unblock")
@@ -49,7 +52,7 @@ public class AdminController {
     public boolean unblockSomeUsers(
             @RequestBody final BlockDto unblockDto
     ) {
-        return userService.unblock(unblockDto);
+        return adminService.unblock(unblockDto);
     }
 
     @PostMapping(value = "/delete")
@@ -57,6 +60,6 @@ public class AdminController {
     public boolean deleteSomeUsers(
             @RequestBody final DeleteDto deleteDto
     ) {
-        return userService.delete(deleteDto);
+        return adminService.delete(deleteDto);
     }
 }

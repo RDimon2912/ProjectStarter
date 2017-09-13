@@ -1,5 +1,6 @@
-package com.projectstarter.ProjectStarter.service.dto;
+package com.projectstarter.ProjectStarter.service.dto.project;
 
+import com.projectstarter.ProjectStarter.service.dto.Dto;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.Date;

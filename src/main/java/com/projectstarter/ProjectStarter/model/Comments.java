@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.sql.Date;
 
 @Entity
-@Table(name = "donates")
+@Table(name = "comments")
 @Getter
 @Setter
 @NoArgsConstructor

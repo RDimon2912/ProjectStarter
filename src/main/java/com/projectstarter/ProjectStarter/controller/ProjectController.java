@@ -1,7 +1,9 @@
 package com.projectstarter.ProjectStarter.controller;
 
 import com.projectstarter.ProjectStarter.service.ProjectService;
-import com.projectstarter.ProjectStarter.service.dto.*;
+import com.projectstarter.ProjectStarter.service.dto.project.ProjectCreateRequestDto;
+import com.projectstarter.ProjectStarter.service.dto.project.ProjectCreateResponseDto;
+import com.projectstarter.ProjectStarter.service.dto.project.ProjectDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
