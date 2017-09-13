@@ -1,21 +1,27 @@
 package com.projectstarter.ProjectStarter.service;
 
 import com.projectstarter.ProjectStarter.model.Biography;
-import com.projectstarter.ProjectStarter.model.Comments;
-import com.projectstarter.ProjectStarter.model.Project;
 import com.projectstarter.ProjectStarter.model.User;
 import com.projectstarter.ProjectStarter.model.enums.BlockStatus;
 import com.projectstarter.ProjectStarter.model.enums.Role;
 import com.projectstarter.ProjectStarter.repository.BiographyRepository;
-import com.projectstarter.ProjectStarter.repository.CommentRepository;
-import com.projectstarter.ProjectStarter.repository.ProjectRepository;
 import com.projectstarter.ProjectStarter.repository.UserRepository;
-import com.projectstarter.ProjectStarter.service.dto.admin.BlockDto;
-import com.projectstarter.ProjectStarter.service.dto.admin.DeleteDto;
+import com.projectstarter.ProjectStarter.security.model.JwtUserDetails;
+import com.projectstarter.ProjectStarter.service.dto.JsonException;
 import com.projectstarter.ProjectStarter.service.dto.admin.UserListDto;
+import com.projectstarter.ProjectStarter.service.dto.login.LoginRequestDto;
+import com.projectstarter.ProjectStarter.service.dto.login.LoginResponseDto;
+import com.projectstarter.ProjectStarter.service.dto.user.BiographyDto;
+import com.projectstarter.ProjectStarter.service.dto.user.ChangeUserDto;
+import com.projectstarter.ProjectStarter.service.transformer.BiographyTransformer;
 import com.projectstarter.ProjectStarter.service.transformer.UserListTransformer;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.sql.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 
 @Service
@@ -30,10 +38,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
 
+    @Autowired
     private final UserRepository userRepository;
+    @Autowired
     private final BiographyRepository biographyRepository;
     private final UserListTransformer userListTransformer;
     private final PasswordEncoder passwordEncoder;
+    private final BiographyTransformer biographyTransformer;
 
     @Transactional()
     public void save(User user) {
@@ -78,6 +89,18 @@ public class UserService {
         }
 
         return userDtoList;
+    }
+
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    public BiographyDto findUserInfo(long id) {
+        User user = userRepository.findById(id);
+        Biography biography = user.getBiography();
+        if (biography != null){
+            BiographyDto dto = this.biographyTransformer.makeDto(biography);
+            return dto;
+        }
+        return null;
     }
 
     @Transactional(readOnly = true)

@@ -28,7 +28,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @RequiredArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private static final String[] allowedUrlsForPost = new String[]{ "/auth/login",
+    private static final String[] allowedUrlsForPost = new String[]{ "/auth/login", "/user/user-info/save-changes",
             "/auth/registration", "/auth/confirm", "/project/update" };
 
     private final JwtAuthenticationProvider jwtAuthenticationProvider;
