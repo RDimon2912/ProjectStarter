@@ -24,6 +24,7 @@ public class ProjectTransformer {
         projectDto.setStartDate(project.getStartDate());
         projectDto.setEndDate(project.getEndDate());
         projectDto.setProjectStatus(project.getStatus().name());
+        projectDto.setImageUrl(project.getImageUrl());
 
         return projectDto;
     }
@@ -45,6 +46,7 @@ public class ProjectTransformer {
         project.setStartDate(projectDto.getStartDate());
         project.setEndDate(projectDto.getEndDate());
         project.setStatus(ProjectStatus.valueOf(projectDto.getProjectStatus()));
+        project.setImageUrl(projectDto.getImageUrl());
 
         return project;
     }

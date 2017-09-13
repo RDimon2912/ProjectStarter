@@ -15,7 +15,7 @@ public class ProjectController {
 
     private final ProjectService projectService;
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_CONFIRMED_USER')")
     @PostMapping(value = "/create")
     @ResponseStatus(value = HttpStatus.OK)
     public ProjectCreateResponseDto create(
@@ -30,6 +30,7 @@ public class ProjectController {
         return projectService.findProject(projectId);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_CONFIRMED_USER')")
     @PostMapping(value = "/update")
     @ResponseStatus(value = HttpStatus.OK)
     public ProjectDto update(
