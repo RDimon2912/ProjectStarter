@@ -1,6 +1,8 @@
 package com.projectstarter.ProjectStarter.service;
 
+import com.projectstarter.ProjectStarter.model.Biography;
 import com.projectstarter.ProjectStarter.model.User;
+import com.projectstarter.ProjectStarter.repository.BiographyRepository;
 import com.projectstarter.ProjectStarter.repository.UserRepository;
 import com.projectstarter.ProjectStarter.security.SecurityHelper;
 import com.projectstarter.ProjectStarter.security.model.JwtUserDetails;
@@ -10,6 +12,7 @@ import com.projectstarter.ProjectStarter.service.dto.login.LoginRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.login.LoginResponseDto;
 import com.projectstarter.ProjectStarter.service.dto.registration.RegistrationRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.registration.RegistrationResponseDto;
+import com.projectstarter.ProjectStarter.service.dto.user.ChangeUserDto;
 import com.projectstarter.ProjectStarter.service.transformer.AuthUserTransformer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +41,7 @@ public class AuthenticationService {
 
     private final UserService userService;
     private final UserRepository userRepository;
+    private final BiographyRepository biographyRepository;
     private final AuthUserTransformer authUserTransformer;
     private final AuthenticationHelper authenticationHelper;
     private final AuthenticationManager authenticationManager;
@@ -145,4 +149,45 @@ public class AuthenticationService {
         userService.confirm(userService.findByEmail(email));
         return new RegistrationResponseDto(email);
     }
+    @Transactional()
+    public void checkUser(ChangeUserDto changeUserDto) {
+
+        try {
+            String email = Optional.ofNullable(changeUserDto.getEmail())
+                    .orElseThrow(() -> new BadCredentialsException("Email should be passed."));
+
+            String password = Optional.ofNullable(changeUserDto.getPassword())
+                    .orElseThrow(() -> new BadCredentialsException("Password should be passed."));
+
+            UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(email,
+                    password);
+
+            // Try to authenticate with this token
+            final Authentication authResult = this.authenticationManager.authenticate(authRequest);
+
+            // Set generated JWT token to response header
+            if (authResult.isAuthenticated()) {
+                JwtUserDetails userDetails = (JwtUserDetails) authResult.getPrincipal();
+
+                User user = userRepository.findOne(userDetails.getId());
+                if (Objects.isNull(user)) {
+                    throw new JsonException("User not exist in system.");
+                } else if (!user.isConfirmed()) {
+                    throw new JsonException("Email is not confirmed.");
+                }
+            } else {
+                throw new JsonException("Authentication failed.");
+            }
+
+            Biography biography = biographyRepository.findById(userRepository.findByEmail(email).getBiography().getId());
+            biography.setBiography(changeUserDto.getBiography());
+            biography.setLocation(changeUserDto.getLocation());
+            biography.setImageUrl(changeUserDto.getImageurl());
+            biography.setName(changeUserDto.getName());
+            biographyRepository.save(biography);
+        } catch (BadCredentialsException exception) {
+            throw new JsonException("Username or password was incorrect. Please try again.", exception);
+        }
+    }
+
 }
