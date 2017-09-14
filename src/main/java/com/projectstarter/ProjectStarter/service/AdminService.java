@@ -4,16 +4,22 @@ import com.projectstarter.ProjectStarter.model.Comments;
 import com.projectstarter.ProjectStarter.model.Project;
 import com.projectstarter.ProjectStarter.model.User;
 import com.projectstarter.ProjectStarter.model.enums.BlockStatus;
+import com.projectstarter.ProjectStarter.model.enums.Role;
 import com.projectstarter.ProjectStarter.repository.CommentRepository;
 import com.projectstarter.ProjectStarter.repository.ProjectRepository;
 import com.projectstarter.ProjectStarter.repository.UserRepository;
 import com.projectstarter.ProjectStarter.service.dto.admin.BlockDto;
 import com.projectstarter.ProjectStarter.service.dto.admin.DeleteDto;
+import com.projectstarter.ProjectStarter.service.dto.admin.UserListDto;
+import com.projectstarter.ProjectStarter.service.dto.user.SortByDto;
+import com.projectstarter.ProjectStarter.service.transformer.UserListTransformer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -24,6 +30,7 @@ public class AdminService {
     private final UserRepository userRepository;
     private final ProjectRepository projectRepository;
     private final CommentRepository commentRepository;
+    private final UserListTransformer userListTransformer;
 
 
     @Transactional()
@@ -80,5 +87,42 @@ public class AdminService {
             userRepository.delete(curUser);
         }
         return true;
+    }
+
+    @Transactional()
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public List<UserListDto> sortByRole(Role role) {
+        List<UserListDto> userListDto = new ArrayList<>();
+        List<User> userList;
+        userList = userRepository.findAllByRoleEquals(role);
+        for (User user : userList) {
+            UserListDto dto = this.userListTransformer.makeDto(user);
+            userListDto.add(dto);
+        }
+        return userListDto;
+    }
+
+    @Transactional()
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public List<UserListDto> sortBy(String by) {
+        List<UserListDto> userListDto = new ArrayList<>();
+        List<User> userList = null;
+        if (by.equals("Registration Date")) {
+            userList = userRepository.findAllByOrderByRegistrationDateDesc();
+        } else if (by.equals("Last Login")) {
+            userList = userRepository.findAllByOrderByLastLogInDesc();
+        } else if (by.equals("Status")) {
+            userList = userRepository.findAllByOrderByBlockStatus();
+        } else {
+            userList = userRepository.findAll();
+        }
+        for (User user : userList) {
+            UserListDto dto = this.userListTransformer.makeDto(user);
+            userListDto.add(dto);
+        }
+        if (by.equals("Amount Of Projects")) {
+            Collections.sort(userListDto);
+        }
+        return userListDto;
     }
 }
