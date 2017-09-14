@@ -79,6 +79,6 @@ public class AdminController {
     public List<UserListDto> sortBy(
             @RequestBody final SortByDto sortByDto
     ) {
-        return adminService.sortBy(sortByDto.by);
+        return adminService.sortBy(sortByDto.by, sortByDto.theRole);
     }
 }

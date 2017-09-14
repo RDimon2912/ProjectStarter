@@ -104,17 +104,37 @@ public class AdminService {
 
     @Transactional()
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public List<UserListDto> sortBy(String by) {
+    public List<UserListDto> sortBy(String by, Role role) {
         List<UserListDto> userListDto = new ArrayList<>();
         List<User> userList = null;
         if (by.equals("Registration Date")) {
-            userList = userRepository.findAllByOrderByRegistrationDateDesc();
+            if (role != null) {
+                userList = userRepository.findAllByRoleOrderByRegistrationDateDesc(role);
+            }
+            else {
+                userList = userRepository.findAllByOrderByRegistrationDateDesc();
+            }
         } else if (by.equals("Last Login")) {
-            userList = userRepository.findAllByOrderByLastLogInDesc();
+            if (role != null) {
+                userList = userRepository.findAllByRoleOrderByLastLogInDesc(role);
+            }
+            else {
+                userList = userRepository.findAllByOrderByLastLogInDesc();
+            }
         } else if (by.equals("Status")) {
-            userList = userRepository.findAllByOrderByBlockStatus();
+            if (role != null) {
+                userList = userRepository.findAllByRoleOrderByBlockStatus(role);
+            }
+            else {
+                userList = userRepository.findAllByOrderByBlockStatus();
+            }
         } else {
-            userList = userRepository.findAll();
+            if (role != null) {
+                userList = userRepository.findAllByRoleEquals(role);
+            }
+            else {
+                userList = userRepository.findAll();
+            }
         }
         for (User user : userList) {
             UserListDto dto = this.userListTransformer.makeDto(user);

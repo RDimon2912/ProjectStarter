@@ -12,7 +12,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findById(Long id);
 
     List<User> findAllByRoleEquals(Role roleAdmin);
-    List<User> findAllByOrderByRegistrationDateDesc();
+    List<User> findAllByRoleOrderByBlockStatus(Role role);
+    List<User> findAllByRoleOrderByLastLogInDesc(Role role);
+    List<User> findAllByRoleOrderByRegistrationDateDesc(Role role);
     List<User> findAllByOrderByBlockStatus();
     List<User> findAllByOrderByLastLogInDesc();
+    List<User> findAllByOrderByRegistrationDateDesc();
 }
