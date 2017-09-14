@@ -27,6 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.SendFailedException;
 import javax.mail.internet.MimeMessage;
+import java.sql.Date;
+import java.util.Calendar;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -72,12 +74,12 @@ public class AuthenticationService {
                 }
 
                 String token = this.authenticationHelper.generateToken(userDetails.getId());
-
+                java.sql.Date ourJavaDateObject = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+                userRepository.findByEmail(loginRequestDto.getUsername()).setLastLogIn(ourJavaDateObject);
                 return new LoginResponseDto(token);
             } else {
                 throw new JsonException("Authentication failed.");
             }
-
         } catch (BadCredentialsException exception) {
             throw new JsonException("Username or password was incorrect. Please try again.", exception);
         }

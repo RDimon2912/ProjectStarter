@@ -13,7 +13,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserListDto implements Dto {
+public class UserListDto implements Dto, Comparable {
 
     private String email;
     private Role role;
@@ -22,4 +22,9 @@ public class UserListDto implements Dto {
     private Date last_log_in;
     private int amountOfProjects;
 
+    @Override
+    public int compareTo(Object userListDto) {
+        int compareAmountOfProjects=((UserListDto)userListDto).getAmountOfProjects();
+        return compareAmountOfProjects-this.amountOfProjects;
+    }
 }
