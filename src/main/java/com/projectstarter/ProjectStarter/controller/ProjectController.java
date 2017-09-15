@@ -1,6 +1,7 @@
 package com.projectstarter.ProjectStarter.controller;
 
 import com.projectstarter.ProjectStarter.service.ProjectService;
+import com.projectstarter.ProjectStarter.service.dto.news.NewsDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectCreateRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectCreateResponseDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectDto;
@@ -39,6 +40,15 @@ public class ProjectController {
             @RequestBody final ProjectDto projectDto
     ) {
         return projectService.update(projectDto);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_CONFIRMED_USER')")
+    @PostMapping(value = "/createNews")
+    @ResponseStatus(value = HttpStatus.OK)
+    public NewsDto createNews(
+            @RequestBody final NewsDto newsDto
+    ) {
+        return projectService.createNews(newsDto);
     }
 }
 
