@@ -79,6 +79,7 @@ public class ProjectService {
 
         project.setTitle(projectCreateRequestDto.getTitle());
         project.setStartDate(new Date((new java.util.Date()).getTime()));
+        project.setEndDate(projectCreateRequestDto.getEndDate());
         project.setStatus(ProjectStatus.IN_PROGRESS);
 
         project = projectRepository.saveAndFlush(project);
