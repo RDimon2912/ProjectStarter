@@ -22,9 +22,12 @@ public class News {
     @JoinColumn(name = "project_id")
     private Project project;
 
+    @Column(name = "title")
+    private String title;
+
     @Column(name = "news_text")
     private String newsText;
-
+    
     @Column(name = "date")
     private Date date;
 }
