@@ -1,6 +1,7 @@
 package com.projectstarter.ProjectStarter.controller;
 
 import com.projectstarter.ProjectStarter.service.ProjectService;
+import com.projectstarter.ProjectStarter.service.dto.news.NewsDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectCreateRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectCreateResponseDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectDto;
@@ -9,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/project", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -39,6 +42,21 @@ public class ProjectController {
             @RequestBody final ProjectDto projectDto
     ) {
         return projectService.update(projectDto);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_CONFIRMED_USER')")
+    @PostMapping(value = "/createNews")
+    @ResponseStatus(value = HttpStatus.OK)
+    public NewsDto createNews(
+            @RequestBody final NewsDto newsDto
+    ) {
+        return projectService.createNews(newsDto);
+    }
+
+    @GetMapping(value = "/news")
+    @ResponseStatus(value = HttpStatus.OK)
+    public List<NewsDto> findNews(@RequestParam("project_id") Long projectId) {
+        return projectService.findNewsByProjectId(projectId);
     }
 }
 

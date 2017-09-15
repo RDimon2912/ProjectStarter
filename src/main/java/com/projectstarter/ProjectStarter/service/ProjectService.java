@@ -1,11 +1,15 @@
 package com.projectstarter.ProjectStarter.service;
 
+import com.projectstarter.ProjectStarter.model.News;
 import com.projectstarter.ProjectStarter.model.Project;
 import com.projectstarter.ProjectStarter.model.enums.Role;
+import com.projectstarter.ProjectStarter.repository.NewsRepository;
 import com.projectstarter.ProjectStarter.repository.ProjectRepository;
 import com.projectstarter.ProjectStarter.security.model.JwtUserDetails;
 import com.projectstarter.ProjectStarter.service.dto.*;
+import com.projectstarter.ProjectStarter.service.dto.news.NewsDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectListDto;
+import com.projectstarter.ProjectStarter.service.transformer.NewsTransformer;
 import com.projectstarter.ProjectStarter.service.transformer.ProjectListTransformer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import com.projectstarter.ProjectStarter.model.User;
 import com.projectstarter.ProjectStarter.model.enums.ProjectStatus;
@@ -32,7 +37,10 @@ import java.sql.Date;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final NewsRepository newsRepository;
+
     private final ProjectTransformer projectTransformer;
+    private final NewsTransformer newsTransformer;
     private final UserService userService;
 
     @Autowired
@@ -83,6 +91,15 @@ public class ProjectService {
         return projectTransformer.makeDto(project);
     }
 
+    public List<NewsDto> findNewsByProjectId(Long projectId) {
+        List<News> newsList = newsRepository.findAllByProjectIdOrderByDateDesc(projectId);
+        List<NewsDto> newsDtoList = new ArrayList<>();
+        for (News news: newsList) {
+            newsDtoList.add(newsTransformer.makeDto(news));
+        }
+        return newsDtoList;
+    }
+
     public ProjectDto update(ProjectDto projectDto) {
         JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -98,5 +115,28 @@ public class ProjectService {
         project = projectRepository.saveAndFlush(project);
 
         return projectTransformer.makeDto(project);
+    }
+
+    public NewsDto createNews(NewsDto newsDto) {
+        JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        for (GrantedAuthority authoritie : userDetails.getAuthorities()) {
+            if (authoritie.getAuthority().equals(Role.ROLE_CONFIRMED_USER.name()) &&
+                    userDetails.getId() != projectRepository.findById(newsDto.getProjectId()).getUser().getId()) {
+                throw new JsonException("You don't have permission for adding news to this project.");
+            }
+        }
+
+        News news = newsTransformer.makeObject(newsDto);
+        news.setDate(new Date(Calendar.getInstance().getTime().getTime()));
+
+        news = newsRepository.saveAndFlush(news);
+        sendNewsToSubscribedUsers(news);
+
+        return newsTransformer.makeDto(news);
+    }
+
+    public void sendNewsToSubscribedUsers(News news) {
+
     }
 }
