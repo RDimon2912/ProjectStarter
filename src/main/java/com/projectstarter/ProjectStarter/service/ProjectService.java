@@ -38,6 +38,7 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final NewsRepository newsRepository;
+
     private final ProjectTransformer projectTransformer;
     private final NewsTransformer newsTransformer;
     private final UserService userService;
@@ -88,6 +89,15 @@ public class ProjectService {
     public ProjectDto findProject(Long projectId) {
         Project project = projectRepository.findById(projectId);
         return projectTransformer.makeDto(project);
+    }
+
+    public List<NewsDto> findNewsByProjectId(Long projectId) {
+        List<News> newsList = newsRepository.findAllByProjectIdOrderByDateDesc(projectId);
+        List<NewsDto> newsDtoList = new ArrayList<>();
+        for (News news: newsList) {
+            newsDtoList.add(newsTransformer.makeDto(news));
+        }
+        return newsDtoList;
     }
 
     public ProjectDto update(ProjectDto projectDto) {

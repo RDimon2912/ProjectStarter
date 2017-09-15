@@ -11,6 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/project", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
@@ -49,6 +51,12 @@ public class ProjectController {
             @RequestBody final NewsDto newsDto
     ) {
         return projectService.createNews(newsDto);
+    }
+
+    @GetMapping(value = "/news")
+    @ResponseStatus(value = HttpStatus.OK)
+    public List<NewsDto> findNews(@RequestParam("project_id") Long projectId) {
+        return projectService.findNewsByProjectId(projectId);
     }
 }
 
