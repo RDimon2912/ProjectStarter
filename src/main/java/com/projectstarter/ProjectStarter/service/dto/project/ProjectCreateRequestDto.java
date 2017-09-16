@@ -16,4 +16,5 @@ public class ProjectCreateRequestDto implements Dto {
     private String title;
     private Long userId;
     private Date endDate;
+    private int targetAmount;
 }

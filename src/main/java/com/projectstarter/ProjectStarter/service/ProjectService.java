@@ -41,7 +41,6 @@ public class ProjectService {
 
     private final ProjectTransformer projectTransformer;
     private final NewsTransformer newsTransformer;
-    private final UserService userService;
 
     @Autowired
     private ProjectListTransformer projectListTransformer;
@@ -81,6 +80,7 @@ public class ProjectService {
         project.setStartDate(new Date((new java.util.Date()).getTime()));
         project.setEndDate(projectCreateRequestDto.getEndDate());
         project.setStatus(ProjectStatus.IN_PROGRESS);
+        project.setTargetAmount(projectCreateRequestDto.getTargetAmount());
 
         project = projectRepository.saveAndFlush(project);
 
