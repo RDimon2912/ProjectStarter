@@ -5,6 +5,8 @@ import com.projectstarter.ProjectStarter.service.dto.news.NewsDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectCreateRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectCreateResponseDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectDto;
+import com.projectstarter.ProjectStarter.service.dto.subscribe.SubscribeRequestDto;
+import com.projectstarter.ProjectStarter.service.dto.subscribe.SubscribeResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -57,6 +59,15 @@ public class ProjectController {
     @ResponseStatus(value = HttpStatus.OK)
     public List<NewsDto> findNews(@RequestParam("project_id") Long projectId) {
         return projectService.findNewsByProjectId(projectId);
+    }
+
+    @PreAuthorize("!hasRole('ROLE_ANONYMOUS')")
+    @PostMapping(value = "/subscribe")
+    @ResponseStatus(value = HttpStatus.OK)
+    public SubscribeResponseDto subscribe(
+            @RequestBody final SubscribeRequestDto subscribeRequestDto
+    ) {
+        return projectService.subscribe(subscribeRequestDto);
     }
 }
 
