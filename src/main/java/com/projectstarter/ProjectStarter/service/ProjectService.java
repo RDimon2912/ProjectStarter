@@ -12,7 +12,7 @@ import com.projectstarter.ProjectStarter.service.dto.project.ProjectListDto;
 import com.projectstarter.ProjectStarter.service.transformer.NewsTransformer;
 import com.projectstarter.ProjectStarter.service.transformer.ProjectListTransformer;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,15 +36,17 @@ import java.sql.Date;
 @RequiredArgsConstructor
 public class ProjectService {
 
+    private static final String DEAULT_IMAGE_PROPERTY = "default.image";
+
+    private final Environment environment;
+
     private final ProjectRepository projectRepository;
     private final NewsRepository newsRepository;
 
     private final ProjectTransformer projectTransformer;
     private final NewsTransformer newsTransformer;
-    private final UserService userService;
 
-    @Autowired
-    private ProjectListTransformer projectListTransformer;
+    private final ProjectListTransformer projectListTransformer;
 
     @Transactional(readOnly = true)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -79,7 +81,10 @@ public class ProjectService {
 
         project.setTitle(projectCreateRequestDto.getTitle());
         project.setStartDate(new Date((new java.util.Date()).getTime()));
+        project.setEndDate(projectCreateRequestDto.getEndDate());
         project.setStatus(ProjectStatus.IN_PROGRESS);
+        project.setTargetAmount(projectCreateRequestDto.getTargetAmount());
+        project.setImageUrl(environment.getProperty(DEAULT_IMAGE_PROPERTY));
 
         project = projectRepository.saveAndFlush(project);
 
