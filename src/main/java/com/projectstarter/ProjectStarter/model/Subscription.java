@@ -3,11 +3,14 @@ package com.projectstarter.ProjectStarter.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
+
 import javax.persistence.*;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+@ToString
 @Entity
 @Table(name = "subscribed_projects")
 @Getter

@@ -1,5 +1,6 @@
 package com.projectstarter.ProjectStarter.service.transformer;
 
+import com.projectstarter.ProjectStarter.model.Biography;
 import com.projectstarter.ProjectStarter.model.Project;
 import com.projectstarter.ProjectStarter.model.Subscription;
 import com.projectstarter.ProjectStarter.model.User;
@@ -22,5 +23,25 @@ public class SubscriptionTransformer {
         subscription.setProject(project);
 
         return subscription;
+    }
+
+    public Subscription copyForSendingEmail(Subscription subscription) {
+        Subscription newSubscription = new Subscription();
+        newSubscription.setId(subscription.getId());
+
+        User user = new User();
+        user.setEmail(subscription.getUser().getEmail());
+
+        Biography biography = new Biography();
+        biography.setName(subscription.getUser().getBiography().getName());
+        user.setBiography(biography);
+        newSubscription.setUser(user);
+
+        Project project = new Project();
+        project.setId(subscription.getProject().getId());
+        project.setTitle(subscription.getProject().getTitle());
+        newSubscription.setProject(project);
+
+        return newSubscription;
     }
 }

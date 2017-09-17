@@ -17,6 +17,7 @@ import com.projectstarter.ProjectStarter.service.transformer.NewsTransformer;
 import com.projectstarter.ProjectStarter.service.transformer.ProjectListTransformer;
 import com.projectstarter.ProjectStarter.service.transformer.SubscriptionTransformer;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -48,7 +49,8 @@ public class ProjectService {
 
     private static final String DEAULT_IMAGE_PROPERTY = "default.image";
 
-    private final JavaMailSender mailSender;
+    @Autowired
+    private JavaMailSender mailSender;
     private final Environment environment;
 
     private final ProjectRepository projectRepository;
@@ -150,25 +152,39 @@ public class ProjectService {
 
     private void sendNewsToSubscribedUsers(News news, String appUrl) {
         List<Subscription> subscriptions = subscribeRepository.findAllByProjectId(news.getProject().getId());
+        List<Subscription> goodSubscriptions = new ArrayList<>();
         for (Subscription subscription: subscriptions) {
-            try {
-                sendEmail(subscription.getUser(), subscription.getProject(), appUrl);
-            } catch (MessagingException e) {
-                e.printStackTrace();
-            }
+            goodSubscriptions.add(subscriptionTransformer.copyForSendingEmail(subscription));
+        }
+        createSendThreads(goodSubscriptions, appUrl);
+    }
+
+    private void createSendThreads(List<Subscription> subscriptions, String appUrl) {
+        for (Subscription subscription: subscriptions) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    sendEmail(subscription.getUser(), subscription.getProject(), appUrl);
+                }
+            }).start();
         }
     }
 
-    private void sendEmail(User user, Project project, String appUrl) throws MessagingException {
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
-        helper.setTo(user.getEmail());
-        helper.setSubject("News on subscribed project");
-        helper.setText("Hi " + user.getBiography().getName() + ",\n\n" +
-                "Project \'" + project.getTitle() + "\' has news for you. Click link below and check it.\n" +
-                appUrl + "/project-info/" + project.getId() + "\n\n" +
-                "Kind regards,\nTeam ProjectStarter");
-        mailSender.send(message);
+    private void sendEmail(User user, Project project, String appUrl) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message);
+            System.out.println(user.getEmail());
+            helper.setTo(user.getEmail());
+            helper.setSubject("News on subscribed project");
+            helper.setText("Hi " + user.getBiography().getName() + ",\n\n" +
+                    "Project \'" + project.getTitle() + "\' has news for you. Click link below and check it.\n" +
+                    appUrl + "/project-info/" + project.getId() + "\n\n" +
+                    "Kind regards,\nTeam ProjectStarter");
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
     }
 
     public SubscribeResponseDto subscribe(SubscribeRequestDto subscribeRequestDto) {
