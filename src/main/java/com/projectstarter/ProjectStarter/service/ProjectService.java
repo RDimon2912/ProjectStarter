@@ -48,8 +48,7 @@ public class ProjectService {
 
     private static final String DEAULT_IMAGE_PROPERTY = "default.image";
 
-    @Autowired
-    private JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
     private final Environment environment;
 
     private final ProjectRepository projectRepository;
@@ -78,16 +77,6 @@ public class ProjectService {
         return projectListDto;
     }
 
-
-
-    public Project save(Project project) {
-        return projectRepository.save(project);
-    }
-
-    public Project saveAndFlush(Project project) {
-        return projectRepository.saveAndFlush(project);
-    }
-
     public ProjectCreateResponseDto create(ProjectCreateRequestDto projectCreateRequestDto) {
         Project project = new Project();
 
@@ -107,11 +96,13 @@ public class ProjectService {
         return new ProjectCreateResponseDto(project.getId());
     }
 
+    @Transactional(readOnly = true)
     public ProjectDto findProject(Long projectId) {
         Project project = projectRepository.findById(projectId);
         return projectTransformer.makeDto(project);
     }
 
+    @Transactional(readOnly = true)
     public List<NewsDto> findNewsByProjectId(Long projectId) {
         List<News> newsList = newsRepository.findAllByProjectIdOrderByDateDesc(projectId);
         List<NewsDto> newsDtoList = new ArrayList<>();
@@ -215,6 +206,7 @@ public class ProjectService {
         return new SubscribeResponseDto(isSubscribed);
     }
 
+    @Transactional(readOnly = true)
     public SubscribeResponseDto subscription(Long userId, Long projectId) {
         Subscription subscription = subscribeRepository.findFirstByUserIdAndProjectId(userId, projectId);
         return new SubscribeResponseDto(subscription != null);

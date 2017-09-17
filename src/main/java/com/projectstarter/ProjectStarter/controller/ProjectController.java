@@ -25,7 +25,7 @@ public class ProjectController {
 
     private final ProjectService projectService;
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_CONFIRMED_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CONFIRMED_USER')")
     @PostMapping(value = "/create")
     @ResponseStatus(value = HttpStatus.OK)
     public ProjectCreateResponseDto create(
@@ -40,7 +40,7 @@ public class ProjectController {
         return projectService.findProject(projectId);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_CONFIRMED_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CONFIRMED_USER')")
     @PostMapping(value = "/update")
     @ResponseStatus(value = HttpStatus.OK)
     public ProjectDto update(
@@ -49,7 +49,7 @@ public class ProjectController {
         return projectService.update(projectDto);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_CONFIRMED_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CONFIRMED_USER')")
     @PostMapping(value = "/createNews")
     @ResponseStatus(value = HttpStatus.OK)
     public NewsDto createNews(
@@ -65,13 +65,15 @@ public class ProjectController {
         return projectService.findNewsByProjectId(projectId);
     }
 
+
     @GetMapping(value = "/comments")
     @ResponseStatus(value = HttpStatus.OK)
     public List<CommentsDto> findComments(@RequestParam("project_id") Long projectId) {
         return projectService.findCommentsByProjectId(projectId);
     }
 
-    @PreAuthorize("!hasRole('ROLE_ANONYMOUS')")
+
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_WAIT_CONFIRM', 'ROLE_CONFIRMED_USER', 'ROLE_ADMIN')")
     @PostMapping(value = "/subscribe")
     @ResponseStatus(value = HttpStatus.OK)
     public SubscribeResponseDto subscribe(
@@ -80,7 +82,8 @@ public class ProjectController {
         return projectService.subscribe(subscribeRequestDto);
     }
 
-    @PreAuthorize("!hasRole('ROLE_ANONYMOUS')")
+
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_WAIT_CONFIRM', 'ROLE_CONFIRMED_USER', 'ROLE_ADMIN')")
     @PostMapping(value = "/addComment")
     @ResponseStatus(value = HttpStatus.OK)
     public boolean addComment(
@@ -89,7 +92,8 @@ public class ProjectController {
         return projectService.addComment(commentRequestDto);
     }
 
-    @PreAuthorize("!hasRole('ROLE_ANONYMOUS')")
+
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_WAIT_CONFIRM', 'ROLE_CONFIRMED_USER', 'ROLE_ADMIN')")
     @GetMapping(value = "/subscription")
     @ResponseStatus(value = HttpStatus.OK)
     public SubscribeResponseDto subscription(
