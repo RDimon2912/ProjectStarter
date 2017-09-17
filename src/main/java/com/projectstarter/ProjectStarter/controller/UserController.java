@@ -2,7 +2,7 @@ package com.projectstarter.ProjectStarter.controller;
 
 import com.projectstarter.ProjectStarter.service.AuthenticationService;
 import com.projectstarter.ProjectStarter.service.UserService;
-import com.projectstarter.ProjectStarter.service.dto.login.LoginRequestDto;
+import com.projectstarter.ProjectStarter.service.dto.CreatorDto;
 import com.projectstarter.ProjectStarter.service.dto.user.BiographyDto;
 import com.projectstarter.ProjectStarter.service.dto.user.ChangeUserDto;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +31,13 @@ public class UserController {
     @ResponseStatus(value = HttpStatus.OK)
     public boolean getUserInfo(@RequestBody final ChangeUserDto changeUserDto) {
         authenticationService.checkUser(changeUserDto);
+        return true;
+    }
+
+    @PostMapping(value = "/send-to-confirm")
+    @ResponseStatus(value = HttpStatus.OK)
+    public boolean sendToConfirm(@RequestBody final CreatorDto creatorDto) {
+        userService.setWaitingRole(creatorDto.getEmail(), creatorDto.getImage());
         return true;
     }
 }

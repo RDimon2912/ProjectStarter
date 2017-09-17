@@ -1,10 +1,12 @@
 package com.projectstarter.ProjectStarter.service;
 
 import com.projectstarter.ProjectStarter.model.Biography;
+import com.projectstarter.ProjectStarter.model.CreatorRequest;
 import com.projectstarter.ProjectStarter.model.User;
 import com.projectstarter.ProjectStarter.model.enums.BlockStatus;
 import com.projectstarter.ProjectStarter.model.enums.Role;
 import com.projectstarter.ProjectStarter.repository.BiographyRepository;
+import com.projectstarter.ProjectStarter.repository.CreatorRepository;
 import com.projectstarter.ProjectStarter.repository.UserRepository;
 import com.projectstarter.ProjectStarter.security.model.JwtUserDetails;
 import com.projectstarter.ProjectStarter.service.dto.JsonException;
@@ -45,6 +47,7 @@ public class UserService {
     private final UserListTransformer userListTransformer;
     private final PasswordEncoder passwordEncoder;
     private final BiographyTransformer biographyTransformer;
+    private final CreatorRepository creatorRepository;
 
     @Transactional()
     public void save(User user) {
@@ -113,4 +116,16 @@ public class UserService {
         return userRepository.findById(id);
     }
 
+    @Transactional()
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public boolean setWaitingRole(String email, String image) {
+        User user = userRepository.findByEmail(email);
+        user.setRole(Role.ROLE_WAIT_CONFIRM);
+        CreatorRequest creatorRequest = new CreatorRequest();
+        creatorRequest.setImage(image);
+        creatorRequest.setUser(user.getId());
+        creatorRepository.save(creatorRequest);
+        userRepository.save(user);
+        return true;
+    }
 }
