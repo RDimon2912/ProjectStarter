@@ -31,9 +31,9 @@ public class ProjectController {
         return projectService.create(projectCreateRequestDto);
     }
 
-    @GetMapping(value = "/{projectId}")
+    @GetMapping(value = "/info")
     @ResponseStatus(value = HttpStatus.OK)
-    public ProjectDto findProject(@PathVariable("projectId") Long projectId) {
+    public ProjectDto findProject(@RequestParam("project_id") Long projectId) {
         return projectService.findProject(projectId);
     }
 
@@ -68,6 +68,16 @@ public class ProjectController {
             @RequestBody final SubscribeRequestDto subscribeRequestDto
     ) {
         return projectService.subscribe(subscribeRequestDto);
+    }
+
+    @PreAuthorize("!hasRole('ROLE_ANONYMOUS')")
+    @GetMapping(value = "/subscription")
+    @ResponseStatus(value = HttpStatus.OK)
+    public SubscribeResponseDto subscription(
+            @RequestParam("user_id") Long userId,
+            @RequestParam("project_id") Long projectId
+    ) {
+        return projectService.subscription(userId, projectId);
     }
 }
 

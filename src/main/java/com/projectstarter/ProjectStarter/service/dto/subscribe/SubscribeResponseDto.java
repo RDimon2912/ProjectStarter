@@ -8,9 +8,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class SubscribeResponseDto {
-    private boolean isSubscribed;
+    private boolean subscribed;
 
-    public SubscribeResponseDto(boolean isSubscribed) {
-        this.isSubscribed = isSubscribed;
+    public SubscribeResponseDto(boolean subscribed) {
+        this.subscribed = subscribed;
     }
 }

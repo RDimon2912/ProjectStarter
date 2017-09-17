@@ -163,6 +163,11 @@ public class ProjectService {
         return new SubscribeResponseDto(isSubscribed);
     }
 
+    public SubscribeResponseDto subscription(Long userId, Long projectId) {
+        Subscription subscription = subscribeRepository.findFirstByUserIdAndProjectId(userId, projectId);
+        return new SubscribeResponseDto(subscription != null);
+    }
+
     private void checkIsFrontUserServerUser(Role role, Long userId, String errorMessage) {
         JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
