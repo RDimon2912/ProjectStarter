@@ -3,10 +3,12 @@ package com.projectstarter.ProjectStarter.service.transformer;
 import com.projectstarter.ProjectStarter.model.User;
 import com.projectstarter.ProjectStarter.repository.ProjectRepository;
 import com.projectstarter.ProjectStarter.service.dto.admin.UserListDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class UserListTransformer {
 
     @Autowired

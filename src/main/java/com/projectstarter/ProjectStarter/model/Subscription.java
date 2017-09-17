@@ -6,30 +6,27 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.sql.Date;
 
-@Entity
-@Table(name = "news")
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 @ToString
+@Entity
+@Table(name = "subscribed_projects")
 @Getter
 @Setter
 @NoArgsConstructor
-public class News {
+public class Subscription {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "project_id")
     private Project project;
-
-    @Column(name = "title")
-    private String title;
-
-    @Column(name = "news_text")
-    private String newsText;
-
-    @Column(name = "date")
-    private Date date;
 }

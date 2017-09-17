@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.sql.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -13,4 +15,6 @@ import lombok.Setter;
 public class ProjectCreateRequestDto implements Dto {
     private String title;
     private Long userId;
+    private Date endDate;
+    private int targetAmount;
 }

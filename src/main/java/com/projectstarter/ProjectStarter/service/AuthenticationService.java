@@ -25,6 +25,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.MessagingException;
 import javax.mail.SendFailedException;
 import javax.mail.internet.MimeMessage;
 import java.util.Calendar;
@@ -37,8 +38,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthenticationService {
 
-    @Autowired
-    private JavaMailSender sender;
+    private final JavaMailSender sender;
 
     private final UserService userService;
     private final UserRepository userRepository;
@@ -120,13 +120,12 @@ public class AuthenticationService {
             String token = this.authenticationHelper.
                     generateToken(userService.findByEmail(newUser.getEmail()).getId());
 
-            try {
-                sendEmail(newUser, appUrl, token);
-            } catch (SendFailedException e) {
-                throw new JsonException("Email address is incorrect.");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    sendEmail(newUser, appUrl, token);
+                }
+            }).start();
 
             return new RegistrationResponseDto(token);
         } catch (BadCredentialsException exception) {
@@ -134,16 +133,20 @@ public class AuthenticationService {
         }
     }
 
-    private void sendEmail(User user, String appUrl, String token) throws Exception {
-        MimeMessage message = sender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
-        helper.setTo(user.getEmail());
-        helper.setSubject("ProjectStarter registration confirmation");
-        helper.setText("Hi " + user.getBiography().getName() + ",\n\n" +
-                        "To confirm your e-mail address, please click the link below:\n" +
-                        appUrl + "/registration/confirm?token=" + token +
-                        "&email=" + user.getEmail());
-        sender.send(message);
+    private void sendEmail(User user, String appUrl, String token) {
+        try {
+            MimeMessage message = sender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message);
+            helper.setTo(user.getEmail());
+            helper.setSubject("ProjectStarter registration confirmation");
+            helper.setText("Hi " + user.getBiography().getName() + ",\n\n" +
+                    "To confirm your e-mail address, please click the link below:\n" +
+                    appUrl + "/registration/confirm?token=" + token +
+                    "&email=" + user.getEmail());
+            sender.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
     }
 
     public RegistrationResponseDto confirm(String email) {
