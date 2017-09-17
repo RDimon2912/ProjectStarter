@@ -1,15 +1,18 @@
 package com.projectstarter.ProjectStarter.service;
 
 import com.projectstarter.ProjectStarter.model.Comments;
+import com.projectstarter.ProjectStarter.model.CreatorRequest;
 import com.projectstarter.ProjectStarter.model.Project;
 import com.projectstarter.ProjectStarter.model.User;
 import com.projectstarter.ProjectStarter.model.enums.BlockStatus;
 import com.projectstarter.ProjectStarter.model.enums.Role;
 import com.projectstarter.ProjectStarter.repository.CommentRepository;
+import com.projectstarter.ProjectStarter.repository.CreatorRepository;
 import com.projectstarter.ProjectStarter.repository.ProjectRepository;
 import com.projectstarter.ProjectStarter.repository.UserRepository;
 import com.projectstarter.ProjectStarter.service.dto.admin.BlockDto;
 import com.projectstarter.ProjectStarter.service.dto.admin.DeleteDto;
+import com.projectstarter.ProjectStarter.service.dto.admin.ResponseScanDto;
 import com.projectstarter.ProjectStarter.service.dto.admin.UserListDto;
 import com.projectstarter.ProjectStarter.service.dto.user.SortByDto;
 import com.projectstarter.ProjectStarter.service.transformer.UserListTransformer;
@@ -31,7 +34,7 @@ public class AdminService {
     private final ProjectRepository projectRepository;
     private final CommentRepository commentRepository;
     private final UserListTransformer userListTransformer;
-
+    private final CreatorRepository creatorRepository;
 
     @Transactional()
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -144,5 +147,37 @@ public class AdminService {
             Collections.sort(userListDto);
         }
         return userListDto;
+    }
+
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseScanDto getPassportScan(String email) {
+        CreatorRequest creatorRequest = creatorRepository.findByUser(userRepository.findByEmail(email).getId());
+        System.out.println(creatorRequest.getImage());
+        ResponseScanDto responseScanDto = new ResponseScanDto();
+        responseScanDto.setPassportScan(creatorRequest.getImage());
+        return responseScanDto;
+    }
+
+    @Transactional()
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public boolean confirm(String email) {
+        User user = userRepository.findByEmail(email);
+        user.setRole(Role.ROLE_CONFIRMED_USER);
+        userRepository.save(user);
+        CreatorRequest creatorRequest = creatorRepository.findByUser(user.getId());
+        creatorRepository.delete(creatorRequest);
+        return true;
+    }
+
+    @Transactional()
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public boolean dismiss(String email) {
+        User user = userRepository.findByEmail(email);
+        user.setRole(Role.ROLE_USER);
+        userRepository.save(user);
+        CreatorRequest creatorRequest = creatorRepository.findByUser(user.getId());
+        creatorRepository.delete(creatorRequest);
+        return true;
     }
 }

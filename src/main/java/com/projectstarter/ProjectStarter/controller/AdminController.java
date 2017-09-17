@@ -4,10 +4,9 @@ import com.projectstarter.ProjectStarter.model.User;
 import com.projectstarter.ProjectStarter.service.AdminService;
 import com.projectstarter.ProjectStarter.service.ProjectService;
 import com.projectstarter.ProjectStarter.service.UserService;
-import com.projectstarter.ProjectStarter.service.dto.admin.BlockDto;
-import com.projectstarter.ProjectStarter.service.dto.admin.DeleteDto;
+import com.projectstarter.ProjectStarter.service.dto.admin.*;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectListDto;
-import com.projectstarter.ProjectStarter.service.dto.admin.UserListDto;
+import com.projectstarter.ProjectStarter.service.dto.registration.ConfirmRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.user.RoleDto;
 import com.projectstarter.ProjectStarter.service.dto.user.SortByDto;
 import lombok.RequiredArgsConstructor;
@@ -80,5 +79,29 @@ public class AdminController {
             @RequestBody final SortByDto sortByDto
     ) {
         return adminService.sortBy(sortByDto.by, sortByDto.theRole);
+    }
+
+    @PostMapping(value = "/get-passport-scan")
+    @ResponseStatus(value = HttpStatus.OK)
+    public ResponseScanDto getPassportScan(
+            @RequestBody final PassportScanDto passportScanDto
+    ) {
+        return adminService.getPassportScan(passportScanDto.getEmail());
+    }
+
+    @PostMapping(value = "/confirm")
+    @ResponseStatus(value = HttpStatus.OK)
+    public boolean confirm(
+            @RequestBody final ConfirmRequestDto confirmRequestDto
+    ) {
+        return adminService.confirm(confirmRequestDto.getEmail());
+    }
+
+    @PostMapping(value = "/dismiss")
+    @ResponseStatus(value = HttpStatus.OK)
+    public boolean dismiss(
+            @RequestBody final ConfirmRequestDto confirmRequestDto
+    ) {
+        return adminService.dismiss(confirmRequestDto.getEmail());
     }
 }

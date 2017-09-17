@@ -28,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.mail.MessagingException;
 import javax.mail.SendFailedException;
 import javax.mail.internet.MimeMessage;
-import java.sql.Date;
 import java.util.Calendar;
 import java.util.Objects;
 import java.util.Optional;
