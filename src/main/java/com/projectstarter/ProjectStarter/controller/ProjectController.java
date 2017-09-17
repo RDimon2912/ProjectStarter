@@ -1,6 +1,8 @@
 package com.projectstarter.ProjectStarter.controller;
 
 import com.projectstarter.ProjectStarter.service.ProjectService;
+import com.projectstarter.ProjectStarter.service.dto.comments.CommentRequestDto;
+import com.projectstarter.ProjectStarter.service.dto.comments.CommentsDto;
 import com.projectstarter.ProjectStarter.service.dto.news.NewsDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectCreateRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectCreateResponseDto;
@@ -63,6 +65,12 @@ public class ProjectController {
         return projectService.findNewsByProjectId(projectId);
     }
 
+    @GetMapping(value = "/comments")
+    @ResponseStatus(value = HttpStatus.OK)
+    public List<CommentsDto> findComments(@RequestParam("project_id") Long projectId) {
+        return projectService.findCommentsByProjectId(projectId);
+    }
+
     @PreAuthorize("!hasRole('ROLE_ANONYMOUS')")
     @PostMapping(value = "/subscribe")
     @ResponseStatus(value = HttpStatus.OK)
@@ -70,6 +78,15 @@ public class ProjectController {
             @RequestBody final SubscribeRequestDto subscribeRequestDto
     ) {
         return projectService.subscribe(subscribeRequestDto);
+    }
+
+    @PreAuthorize("!hasRole('ROLE_ANONYMOUS')")
+    @PostMapping(value = "/addComment")
+    @ResponseStatus(value = HttpStatus.OK)
+    public boolean addComment(
+            @RequestBody final CommentRequestDto commentRequestDto
+    ) {
+        return projectService.addComment(commentRequestDto);
     }
 
     @PreAuthorize("!hasRole('ROLE_ANONYMOUS')")

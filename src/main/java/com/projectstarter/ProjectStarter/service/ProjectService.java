@@ -1,21 +1,20 @@
 package com.projectstarter.ProjectStarter.service;
 
-import com.projectstarter.ProjectStarter.model.News;
-import com.projectstarter.ProjectStarter.model.Project;
-import com.projectstarter.ProjectStarter.model.Subscription;
+import com.projectstarter.ProjectStarter.model.*;
 import com.projectstarter.ProjectStarter.model.enums.Role;
+import com.projectstarter.ProjectStarter.repository.CommentRepository;
 import com.projectstarter.ProjectStarter.repository.NewsRepository;
 import com.projectstarter.ProjectStarter.repository.ProjectRepository;
 import com.projectstarter.ProjectStarter.repository.SubscribeRepository;
 import com.projectstarter.ProjectStarter.security.model.JwtUserDetails;
 import com.projectstarter.ProjectStarter.service.dto.*;
+import com.projectstarter.ProjectStarter.service.dto.comments.CommentRequestDto;
+import com.projectstarter.ProjectStarter.service.dto.comments.CommentsDto;
 import com.projectstarter.ProjectStarter.service.dto.news.NewsDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectListDto;
 import com.projectstarter.ProjectStarter.service.dto.subscribe.SubscribeRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.subscribe.SubscribeResponseDto;
-import com.projectstarter.ProjectStarter.service.transformer.NewsTransformer;
-import com.projectstarter.ProjectStarter.service.transformer.ProjectListTransformer;
-import com.projectstarter.ProjectStarter.service.transformer.SubscriptionTransformer;
+import com.projectstarter.ProjectStarter.service.transformer.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -30,16 +29,16 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import com.projectstarter.ProjectStarter.model.User;
+
 import com.projectstarter.ProjectStarter.model.enums.ProjectStatus;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectCreateRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectCreateResponseDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectDto;
-import com.projectstarter.ProjectStarter.service.transformer.ProjectTransformer;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.stream.events.Comment;
 import java.sql.Date;
 
 @Service
@@ -56,9 +55,11 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final NewsRepository newsRepository;
     private final SubscribeRepository subscribeRepository;
+    private final CommentRepository commentRepository;
 
     private final ProjectTransformer projectTransformer;
     private final NewsTransformer newsTransformer;
+    private final CommentTransformer commentTransformer;
     private final SubscriptionTransformer subscriptionTransformer;
 
     private final ProjectListTransformer projectListTransformer;
@@ -118,6 +119,15 @@ public class ProjectService {
             newsDtoList.add(newsTransformer.makeDto(news));
         }
         return newsDtoList;
+    }
+
+    public List<CommentsDto> findCommentsByProjectId(Long projectId) {
+        List<Comments> commentsList = commentRepository.findAllByProjectIdOrderByDateDesc(projectId);
+        List<CommentsDto> commentsDtoList = new ArrayList<>();
+        for (Comments comment: commentsList) {
+            commentsDtoList.add(commentTransformer.makeDto(comment));
+        }
+        return commentsDtoList;
     }
 
     public ProjectDto update(ProjectDto projectDto) {
@@ -219,5 +229,11 @@ public class ProjectService {
                 throw new JsonException(errorMessage);
             }
         }
+    }
+
+    public boolean addComment(CommentRequestDto commentRequestDto) {
+        Comments comment = commentTransformer.makeObject(commentRequestDto);
+        commentRepository.save(comment);
+        return true;
     }
 }
