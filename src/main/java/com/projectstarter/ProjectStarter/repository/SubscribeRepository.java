@@ -10,4 +10,5 @@ public interface SubscribeRepository extends JpaRepository<Subscription, Long> {
     List<Subscription> findAllByProjectId(Long projectId);
     Subscription findFirstByUserIdAndProjectId(Long userId, Long projectId);
     void deleteByUserIdAndProjectId(Long userId, Long projectId);
+    List<Subscription> findAllByUserId(Long userId);
 }
