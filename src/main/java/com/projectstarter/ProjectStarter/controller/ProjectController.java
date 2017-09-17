@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -50,9 +51,10 @@ public class ProjectController {
     @PostMapping(value = "/createNews")
     @ResponseStatus(value = HttpStatus.OK)
     public NewsDto createNews(
-            @RequestBody final NewsDto newsDto
+            @RequestBody final NewsDto newsDto,
+            HttpServletRequest request
     ) {
-        return projectService.createNews(newsDto);
+        return projectService.createNews(newsDto, request);
     }
 
     @GetMapping(value = "/news")

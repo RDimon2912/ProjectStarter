@@ -18,6 +18,8 @@ import com.projectstarter.ProjectStarter.service.transformer.ProjectListTransfor
 import com.projectstarter.ProjectStarter.service.transformer.SubscriptionTransformer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,6 +36,9 @@ import com.projectstarter.ProjectStarter.service.dto.project.ProjectCreateRespon
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectDto;
 import com.projectstarter.ProjectStarter.service.transformer.ProjectTransformer;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
 
 @Service
@@ -43,6 +48,7 @@ public class ProjectService {
 
     private static final String DEAULT_IMAGE_PROPERTY = "default.image";
 
+    private final JavaMailSender mailSender;
     private final Environment environment;
 
     private final ProjectRepository projectRepository;
@@ -125,7 +131,7 @@ public class ProjectService {
         return projectTransformer.makeDto(project);
     }
 
-    public NewsDto createNews(NewsDto newsDto) {
+    public NewsDto createNews(NewsDto newsDto, HttpServletRequest request) {
         checkIsFrontUserServerUser(
                 Role.ROLE_CONFIRMED_USER,
                 projectRepository.findById(newsDto.getProjectId()).getUser().getId(),
@@ -134,15 +140,35 @@ public class ProjectService {
 
         News news = newsTransformer.makeObject(newsDto);
         news.setDate(new Date(Calendar.getInstance().getTime().getTime()));
-
         news = newsRepository.saveAndFlush(news);
-        sendNewsToSubscribedUsers(news);
+
+        String appUrl = request.getScheme() + "://" + request.getServerName() + ":4200";
+        sendNewsToSubscribedUsers(news, appUrl);
 
         return newsTransformer.makeDto(news);
     }
 
-    public void sendNewsToSubscribedUsers(News news) {
+    private void sendNewsToSubscribedUsers(News news, String appUrl) {
+        List<Subscription> subscriptions = subscribeRepository.findAllByProjectId(news.getProject().getId());
+        for (Subscription subscription: subscriptions) {
+            try {
+                sendEmail(subscription.getUser(), subscription.getProject(), appUrl);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
+    private void sendEmail(User user, Project project, String appUrl) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+        helper.setTo(user.getEmail());
+        helper.setSubject("News on subscribed project");
+        helper.setText("Hi " + user.getBiography().getName() + ",\n\n" +
+                "Project \'" + project.getTitle() + "\' has news for you. Click link below and check it.\n" +
+                appUrl + "/project-info/" + project.getId() + "\n\n" +
+                "Kind regards,\nTeam ProjectStarter");
+        mailSender.send(message);
     }
 
     public SubscribeResponseDto subscribe(SubscribeRequestDto subscribeRequestDto) {
