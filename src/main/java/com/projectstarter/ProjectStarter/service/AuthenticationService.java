@@ -38,8 +38,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthenticationService {
 
-    @Autowired
-    private JavaMailSender sender;
+    private final JavaMailSender sender;
 
     private final UserService userService;
     private final UserRepository userRepository;
