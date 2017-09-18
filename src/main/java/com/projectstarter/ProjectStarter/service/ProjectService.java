@@ -2,14 +2,12 @@ package com.projectstarter.ProjectStarter.service;
 
 import com.projectstarter.ProjectStarter.model.*;
 import com.projectstarter.ProjectStarter.model.enums.Role;
-import com.projectstarter.ProjectStarter.repository.CommentRepository;
-import com.projectstarter.ProjectStarter.repository.NewsRepository;
-import com.projectstarter.ProjectStarter.repository.ProjectRepository;
-import com.projectstarter.ProjectStarter.repository.SubscribeRepository;
+import com.projectstarter.ProjectStarter.repository.*;
 import com.projectstarter.ProjectStarter.security.model.JwtUserDetails;
 import com.projectstarter.ProjectStarter.service.dto.*;
 import com.projectstarter.ProjectStarter.service.dto.comments.CommentRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.comments.CommentsDto;
+import com.projectstarter.ProjectStarter.service.dto.goal.GoalDto;
 import com.projectstarter.ProjectStarter.service.dto.news.NewsDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectListDto;
 import com.projectstarter.ProjectStarter.service.dto.subscribe.SubscribeRequestDto;
@@ -53,11 +51,13 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final NewsRepository newsRepository;
+    private final GoalRepository goalRepository;
     private final SubscribeRepository subscribeRepository;
     private final CommentRepository commentRepository;
 
     private final ProjectTransformer projectTransformer;
     private final NewsTransformer newsTransformer;
+    private final GoalTransformer goalTransformer;
     private final CommentTransformer commentTransformer;
     private final SubscriptionTransformer subscriptionTransformer;
 
@@ -100,6 +100,16 @@ public class ProjectService {
     public ProjectDto findProject(Long projectId) {
         Project project = projectRepository.findById(projectId);
         return projectTransformer.makeDto(project);
+    }
+
+    @Transactional(readOnly = true)
+    public List<GoalDto> findGoalsByProjectId(Long projectId) {
+        List<Goal> goalList = goalRepository.findAllByProjectId(projectId);
+        List<GoalDto> goalDtoList = new ArrayList<>();
+        for (Goal goal: goalList) {
+            goalDtoList.add(goalTransformer.makeDto(goal));
+        }
+        return goalDtoList;
     }
 
     @Transactional(readOnly = true)
@@ -186,6 +196,19 @@ public class ProjectService {
         } catch (MessagingException e) {
             e.printStackTrace();
         }
+    }
+
+    public GoalDto createGoal(GoalDto goalDto) {
+        checkIsFrontUserServerUser(
+                Role.ROLE_CONFIRMED_USER,
+                projectRepository.findById(goalDto.getProjectId()).getUser().getId(),
+                "You don't have permission for adding goals to this project."
+        );
+
+        Goal goal = goalTransformer.makeObject(goalDto);
+        goal = goalRepository.saveAndFlush(goal);
+
+        return goalTransformer.makeDto(goal);
     }
 
     public SubscribeResponseDto subscribe(SubscribeRequestDto subscribeRequestDto) {
