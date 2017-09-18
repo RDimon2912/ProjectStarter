@@ -7,6 +7,7 @@ import com.projectstarter.ProjectStarter.service.dto.news.NewsDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectCreateRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectCreateResponseDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectDto;
+import com.projectstarter.ProjectStarter.service.dto.rewards.RewardsDto;
 import com.projectstarter.ProjectStarter.service.dto.subscribe.SubscribeRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.subscribe.SubscribeResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -70,6 +71,12 @@ public class ProjectController {
     @ResponseStatus(value = HttpStatus.OK)
     public List<CommentsDto> findComments(@RequestParam("project_id") Long projectId) {
         return projectService.findCommentsByProjectId(projectId);
+    }
+
+    @GetMapping(value = "/rewards")
+    @ResponseStatus(value = HttpStatus.OK)
+    public List<RewardsDto> findRewards(@RequestParam("project_id") Long projectId) {
+        return projectService.findRewardsByProjectId(projectId);
     }
 
 
