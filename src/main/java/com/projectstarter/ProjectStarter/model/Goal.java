@@ -27,10 +27,6 @@ public class Goal {
     @Column(name = "amount")
     private int amount;
 
-    @Column(name = "date")
-    private Timestamp date;
-
-    @Column(name = "status")
-    @Enumerated(EnumType.STRING)
-    private ProjectStatus status;
+    @Column(name = "goal_text")
+    private String goalText;
 }
