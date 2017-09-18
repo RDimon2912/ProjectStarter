@@ -39,7 +39,7 @@ public class UserController {
     @GetMapping(value = "/user_projects")
     @ResponseStatus(value = HttpStatus.OK)
     public List<ProjectDto> userProjects(@RequestParam("user_id") Long userId) {
-        return userService.findAllSubscribedProjectsByUserId(userId);
+        return userService.findAllUserProjects(userId);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_WAIT_CONFIRM', 'ROLE_CONFIRMED_USER', 'ROLE_ADMIN')")

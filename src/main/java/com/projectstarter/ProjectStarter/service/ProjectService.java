@@ -185,7 +185,6 @@ public class ProjectService {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message);
-            System.out.println(user.getEmail());
             helper.setTo(user.getEmail());
             helper.setSubject("News on subscribed project");
             helper.setText("Hi " + user.getBiography().getName() + ",\n\n" +
@@ -250,5 +249,15 @@ public class ProjectService {
         Comments comment = commentTransformer.makeObject(commentRequestDto);
         commentRepository.save(comment);
         return true;
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProjectDto> findLastCreatedProjects() {
+        List<Project> projectList = projectRepository.findAllOrderByStartDateDescLimit8();
+        List<ProjectDto> projectDtoList = new ArrayList<>();
+        for (Project project: projectList) {
+            projectDtoList.add(projectTransformer.makeDto(project));
+        }
+        return projectDtoList;
     }
 }

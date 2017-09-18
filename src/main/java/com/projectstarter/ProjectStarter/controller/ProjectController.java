@@ -118,5 +118,11 @@ public class ProjectController {
     ) {
         return projectService.subscription(userId, projectId);
     }
+
+    @GetMapping(value = "/last_created")
+    @ResponseStatus(value = HttpStatus.OK)
+    public List<ProjectDto> findLastCreatedProjects() {
+        return projectService.findLastCreatedProjects();
+    }
 }
 
