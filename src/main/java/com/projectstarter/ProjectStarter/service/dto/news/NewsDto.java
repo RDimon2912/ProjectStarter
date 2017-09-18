@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 @Getter
 @Setter
@@ -16,5 +17,5 @@ public class NewsDto {
     private Long projectId;
     private String title;
     private String newsText;
-    private Date date;
+    private Timestamp date;
 }

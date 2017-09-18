@@ -73,8 +73,9 @@ public class AuthenticationService {
                 }
 
                 String token = this.authenticationHelper.generateToken(userDetails.getId());
-                java.sql.Date ourJavaDateObject = new java.sql.Date(Calendar.getInstance().getTime().getTime());
-                userRepository.findByEmail(loginRequestDto.getUsername()).setLastLogIn(ourJavaDateObject);
+                User newUser = userRepository.findByEmail(loginRequestDto.getUsername());
+                newUser.setLastLogIn(new java.sql.Timestamp(new java.util.Date().getTime()));
+                userRepository.save(newUser);
                 return new LoginResponseDto(token);
             } else {
                 throw new JsonException("Authentication failed.");

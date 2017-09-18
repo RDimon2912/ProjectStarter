@@ -85,7 +85,7 @@ public class ProjectService {
         project.setUser(user);
 
         project.setTitle(projectCreateRequestDto.getTitle());
-        project.setStartDate(new Date((new java.util.Date()).getTime()));
+        project.setStartDate(new java.sql.Timestamp(new java.util.Date().getTime()));
         project.setEndDate(projectCreateRequestDto.getEndDate());
         project.setStatus(ProjectStatus.IN_PROGRESS);
         project.setTargetAmount(projectCreateRequestDto.getTargetAmount());
@@ -142,7 +142,7 @@ public class ProjectService {
                 );
 
         News news = newsTransformer.makeObject(newsDto);
-        news.setDate(new Date(Calendar.getInstance().getTime().getTime()));
+        news.setDate(new java.sql.Timestamp(new java.util.Date().getTime()));
         news = newsRepository.saveAndFlush(news);
 
         String appUrl = request.getScheme() + "://" + request.getServerName() + ":4200";

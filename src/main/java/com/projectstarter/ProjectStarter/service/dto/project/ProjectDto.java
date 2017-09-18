@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 @Getter
 @Setter
@@ -15,13 +16,12 @@ public class ProjectDto {
     private Long id;
     private Long userId;
     private String title;
-//    private String imageUrl;
     private String description;
     private int targetAmount;
     private int currentAmount;
     private double rating;
-    private Date startDate;
-    private Date endDate;
+    private Timestamp startDate;
+    private Timestamp endDate;
     private String projectStatus;
     private String imageUrl;
 }

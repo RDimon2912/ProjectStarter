@@ -8,6 +8,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 @ToString
 @Entity
@@ -45,10 +46,10 @@ public class Project {
     private double rating;
 
     @Column(name = "start_date")
-    private Date startDate;
+    private Timestamp startDate;
 
     @Column(name = "end_date")
-    private Date endDate;
+    private Timestamp endDate;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)

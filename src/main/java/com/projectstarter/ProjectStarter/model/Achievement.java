@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "achievements")
@@ -28,5 +29,5 @@ public class Achievement {
     private AchievementName achievementName;
 
     @Column(name = "date")
-    private Date date;
+    private Timestamp date;
 }
