@@ -4,6 +4,7 @@ import com.projectstarter.ProjectStarter.service.ProjectService;
 import com.projectstarter.ProjectStarter.service.dto.comments.CommentRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.comments.CommentsDto;
 import com.projectstarter.ProjectStarter.service.dto.news.NewsDto;
+import com.projectstarter.ProjectStarter.service.dto.payment.PaymentRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectCreateRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectCreateResponseDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectDto;
@@ -108,6 +109,15 @@ public class ProjectController {
             @RequestParam("project_id") Long projectId
     ) {
         return projectService.subscription(userId, projectId);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_WAIT_CONFIRM', 'ROLE_CONFIRMED_USER', 'ROLE_ADMIN')")
+    @PostMapping(value = "/payment")
+    @ResponseStatus(value = HttpStatus.OK)
+    public boolean payment(
+            @RequestBody final PaymentRequestDto paymentRequestDto
+    ) {
+        return projectService.pay(paymentRequestDto);
     }
 }
 

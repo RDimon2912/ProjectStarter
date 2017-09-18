@@ -9,6 +9,7 @@ import com.projectstarter.ProjectStarter.service.dto.*;
 import com.projectstarter.ProjectStarter.service.dto.comments.CommentRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.comments.CommentsDto;
 import com.projectstarter.ProjectStarter.service.dto.news.NewsDto;
+import com.projectstarter.ProjectStarter.service.dto.payment.PaymentRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectListDto;
 import com.projectstarter.ProjectStarter.service.dto.rewards.RewardsDto;
 import com.projectstarter.ProjectStarter.service.dto.subscribe.SubscribeRequestDto;
@@ -53,12 +54,14 @@ public class ProjectService {
     private final SubscribeRepository subscribeRepository;
     private final CommentRepository commentRepository;
     private final DonateSystemRepository donateSystemRepository;
+    private final DonateRepository donateRepository;
 
     private final ProjectTransformer projectTransformer;
     private final NewsTransformer newsTransformer;
     private final CommentTransformer commentTransformer;
     private final SubscriptionTransformer subscriptionTransformer;
     private final RewardTransformer rewardTransformer;
+    private final DonateTransformer donateTransformer;
 
     private final ProjectListTransformer projectListTransformer;
 
@@ -237,4 +240,9 @@ public class ProjectService {
         return true;
     }
 
+    public boolean pay(PaymentRequestDto paymentRequestDto) {
+        Donate donate = donateTransformer.makeObject(paymentRequestDto);
+        donateRepository.save(donate);
+        return true;
+    }
 }
