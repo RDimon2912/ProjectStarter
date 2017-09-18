@@ -69,6 +69,12 @@ public class ProjectController {
         return projectService.createGoal(goalDto);
     }
 
+    @GetMapping(value = "/project_goals")
+    @ResponseStatus(value = HttpStatus.OK)
+    public List<GoalDto> findProjectGoals(@RequestParam("project_id") Long projectId) {
+        return projectService.findGoalsByProjectId(projectId);
+    }
+
     @GetMapping(value = "/news")
     @ResponseStatus(value = HttpStatus.OK)
     public List<NewsDto> findNews(@RequestParam("project_id") Long projectId) {

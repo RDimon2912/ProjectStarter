@@ -103,6 +103,16 @@ public class ProjectService {
     }
 
     @Transactional(readOnly = true)
+    public List<GoalDto> findGoalsByProjectId(Long projectId) {
+        List<Goal> goalList = goalRepository.findAllByProjectId(projectId);
+        List<GoalDto> goalDtoList = new ArrayList<>();
+        for (Goal goal: goalList) {
+            goalDtoList.add(goalTransformer.makeDto(goal));
+        }
+        return goalDtoList;
+    }
+
+    @Transactional(readOnly = true)
     public List<NewsDto> findNewsByProjectId(Long projectId) {
         List<News> newsList = newsRepository.findAllByProjectIdOrderByDateDesc(projectId);
         List<NewsDto> newsDtoList = new ArrayList<>();
