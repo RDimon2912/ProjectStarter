@@ -124,5 +124,11 @@ public class ProjectController {
     public List<ProjectDto> findLastCreatedProjects() {
         return projectService.findLastCreatedProjects();
     }
+
+    @GetMapping(value = "/successfully_financed")
+    @ResponseStatus(value = HttpStatus.OK)
+    public List<ProjectDto> findSuccessfullyFinancedProjects() {
+        return projectService.findSuccessfullyFinancedProjects();
+    }
 }
 
