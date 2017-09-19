@@ -53,7 +53,10 @@ public class UserService {
         if (user.getRegistrationDate() == null) {
             user.setRegistrationDate(new java.sql.Timestamp(new java.util.Date().getTime()));
         }
-        userRepository.save(user);
+        user = userRepository.saveAndFlush(user);
+        Biography biography = biographyRepository.findById(user.getBiography().getId());
+        biography.setUser(user);
+        biographyRepository.save(biography);
     }
 
     @Transactional()
@@ -143,7 +146,7 @@ public class UserService {
         user.setRole(Role.ROLE_WAIT_CONFIRM);
         CreatorRequest creatorRequest = new CreatorRequest();
         creatorRequest.setImage(image);
-        creatorRequest.setUser(user.getId());
+        creatorRequest.setUser(user);
         creatorRepository.save(creatorRequest);
         userRepository.save(user);
         return true;
