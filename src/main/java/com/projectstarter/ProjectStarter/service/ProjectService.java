@@ -1,22 +1,21 @@
 package com.projectstarter.ProjectStarter.service;
 
 import com.projectstarter.ProjectStarter.model.*;
+import com.projectstarter.ProjectStarter.model.DonateSystem;
 import com.projectstarter.ProjectStarter.model.enums.Role;
-import com.projectstarter.ProjectStarter.repository.CommentRepository;
-import com.projectstarter.ProjectStarter.repository.NewsRepository;
-import com.projectstarter.ProjectStarter.repository.ProjectRepository;
-import com.projectstarter.ProjectStarter.repository.SubscribeRepository;
+import com.projectstarter.ProjectStarter.repository.*;
 import com.projectstarter.ProjectStarter.security.model.JwtUserDetails;
 import com.projectstarter.ProjectStarter.service.dto.*;
 import com.projectstarter.ProjectStarter.service.dto.comments.CommentRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.comments.CommentsDto;
 import com.projectstarter.ProjectStarter.service.dto.news.NewsDto;
+import com.projectstarter.ProjectStarter.service.dto.payment.PaymentRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectListDto;
+import com.projectstarter.ProjectStarter.service.dto.rewards.RewardsDto;
 import com.projectstarter.ProjectStarter.service.dto.subscribe.SubscribeRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.subscribe.SubscribeResponseDto;
 import com.projectstarter.ProjectStarter.service.transformer.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -38,7 +37,6 @@ import com.projectstarter.ProjectStarter.service.dto.project.ProjectDto;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.stream.events.Comment;
 import java.sql.Date;
 
 @Service
@@ -55,11 +53,15 @@ public class ProjectService {
     private final NewsRepository newsRepository;
     private final SubscribeRepository subscribeRepository;
     private final CommentRepository commentRepository;
+    private final DonateSystemRepository donateSystemRepository;
+    private final DonateRepository donateRepository;
 
     private final ProjectTransformer projectTransformer;
     private final NewsTransformer newsTransformer;
     private final CommentTransformer commentTransformer;
     private final SubscriptionTransformer subscriptionTransformer;
+    private final RewardTransformer rewardTransformer;
+    private final DonateTransformer donateTransformer;
 
     private final ProjectListTransformer projectListTransformer;
 
@@ -121,6 +123,15 @@ public class ProjectService {
         return commentsDtoList;
     }
 
+    public List<RewardsDto> findRewardsByProjectId(Long projectId) {
+        List<DonateSystem> rewardsList = donateSystemRepository.findAllByProjectId(projectId);
+        List<RewardsDto> rewardsDtoList = new ArrayList<>();
+        for (DonateSystem reward: rewardsList) {
+            rewardsDtoList.add(rewardTransformer.makeDto(reward));
+        }
+        return rewardsDtoList;
+    }
+
     public ProjectDto update(ProjectDto projectDto) {
         checkIsFrontUserServerUser(
                 Role.ROLE_CONFIRMED_USER,
@@ -149,6 +160,17 @@ public class ProjectService {
         sendNewsToSubscribedUsers(news, appUrl);
 
         return newsTransformer.makeDto(news);
+    }
+
+    public RewardsDto createReward(RewardsDto rewardsDto, HttpServletRequest request) {
+        checkIsFrontUserServerUser(
+                Role.ROLE_CONFIRMED_USER,
+                projectRepository.findById(rewardsDto.getProjectId()).getUser().getId(),
+                "You don't have permission for adding news to this project."
+        );
+        DonateSystem donateSystem = donateTransformer.makeObjectDS(rewardsDto);
+        donateSystem = donateSystemRepository.saveAndFlush(donateSystem);
+        return donateTransformer.makeDto(donateSystem);
     }
 
     private void sendNewsToSubscribedUsers(News news, String appUrl) {
@@ -228,4 +250,12 @@ public class ProjectService {
         commentRepository.save(comment);
         return true;
     }
+
+    public boolean pay(PaymentRequestDto paymentRequestDto) {
+        Donate donate = donateTransformer.makeObject(paymentRequestDto);
+        donateRepository.save(donate);
+        return true;
+    }
+
+
 }
