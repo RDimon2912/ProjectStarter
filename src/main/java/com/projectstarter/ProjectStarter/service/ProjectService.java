@@ -1,6 +1,7 @@
 package com.projectstarter.ProjectStarter.service;
 
 import com.projectstarter.ProjectStarter.model.*;
+import com.projectstarter.ProjectStarter.model.DonateSystem;
 import com.projectstarter.ProjectStarter.model.enums.Role;
 import com.projectstarter.ProjectStarter.repository.*;
 import com.projectstarter.ProjectStarter.security.model.JwtUserDetails;
@@ -9,7 +10,9 @@ import com.projectstarter.ProjectStarter.service.dto.comments.CommentRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.comments.CommentsDto;
 import com.projectstarter.ProjectStarter.service.dto.goal.GoalDto;
 import com.projectstarter.ProjectStarter.service.dto.news.NewsDto;
+import com.projectstarter.ProjectStarter.service.dto.payment.PaymentRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectListDto;
+import com.projectstarter.ProjectStarter.service.dto.rewards.RewardsDto;
 import com.projectstarter.ProjectStarter.service.dto.subscribe.SubscribeRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.subscribe.SubscribeResponseDto;
 import com.projectstarter.ProjectStarter.service.transformer.*;
@@ -50,12 +53,16 @@ public class ProjectService {
     private final GoalRepository goalRepository;
     private final SubscribeRepository subscribeRepository;
     private final CommentRepository commentRepository;
+    private final DonateSystemRepository donateSystemRepository;
+    private final DonateRepository donateRepository;
 
     private final ProjectTransformer projectTransformer;
     private final NewsTransformer newsTransformer;
     private final GoalTransformer goalTransformer;
     private final CommentTransformer commentTransformer;
     private final SubscriptionTransformer subscriptionTransformer;
+    private final RewardTransformer rewardTransformer;
+    private final DonateTransformer donateTransformer;
 
     private final ProjectListTransformer projectListTransformer;
 
@@ -127,6 +134,15 @@ public class ProjectService {
         return commentsDtoList;
     }
 
+    public List<RewardsDto> findRewardsByProjectId(Long projectId) {
+        List<DonateSystem> rewardsList = donateSystemRepository.findAllByProjectId(projectId);
+        List<RewardsDto> rewardsDtoList = new ArrayList<>();
+        for (DonateSystem reward: rewardsList) {
+            rewardsDtoList.add(rewardTransformer.makeDto(reward));
+        }
+        return rewardsDtoList;
+    }
+
     public ProjectDto update(ProjectDto projectDto) {
         checkIsFrontUserServerUser(
                 Role.ROLE_CONFIRMED_USER,
@@ -155,6 +171,17 @@ public class ProjectService {
         sendNewsToSubscribedUsers(news, appUrl);
 
         return newsTransformer.makeDto(news);
+    }
+
+    public RewardsDto createReward(RewardsDto rewardsDto, HttpServletRequest request) {
+        checkIsFrontUserServerUser(
+                Role.ROLE_CONFIRMED_USER,
+                projectRepository.findById(rewardsDto.getProjectId()).getUser().getId(),
+                "You don't have permission for adding news to this project."
+        );
+        DonateSystem donateSystem = donateTransformer.makeObjectDS(rewardsDto);
+        donateSystem = donateSystemRepository.saveAndFlush(donateSystem);
+        return donateTransformer.makeDto(donateSystem);
     }
 
     private void sendNewsToSubscribedUsers(News news, String appUrl) {
@@ -266,5 +293,11 @@ public class ProjectService {
             projectDtoList.add(projectTransformer.makeDto(project));
         }
         return projectDtoList;
+    }
+
+    public boolean pay(PaymentRequestDto paymentRequestDto) {
+        Donate donate = donateTransformer.makeObject(paymentRequestDto);
+        donateRepository.save(donate);
+        return true;
     }
 }

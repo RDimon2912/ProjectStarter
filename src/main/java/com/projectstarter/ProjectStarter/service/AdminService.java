@@ -153,7 +153,6 @@ public class AdminService {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseScanDto getPassportScan(String email) {
         CreatorRequest creatorRequest = creatorRepository.findByUser(userRepository.findByEmail(email).getId());
-        System.out.println(creatorRequest.getImage());
         ResponseScanDto responseScanDto = new ResponseScanDto();
         responseScanDto.setPassportScan(creatorRequest.getImage());
         return responseScanDto;
