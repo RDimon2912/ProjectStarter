@@ -17,8 +17,9 @@ public class CreatorRequest {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "user_id")
-    private long user;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Column(name = "image")
     private String image;

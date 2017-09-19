@@ -7,8 +7,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.List;
 
 @ToString
 @Entity
@@ -17,7 +17,6 @@ import java.sql.Timestamp;
 @Setter
 @NoArgsConstructor
 public class Project {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -54,4 +53,20 @@ public class Project {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private ProjectStatus status;
+
+    @OneToMany(mappedBy = "project",
+            cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<News> newsList;
+
+    @OneToMany(mappedBy = "project",
+            cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Comments> commentsList;
+
+    @OneToMany(mappedBy = "project",
+            cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Goal> goalList;
+
+    @OneToMany(mappedBy = "project",
+            cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<DonateSystem> donateSystemList;
 }
