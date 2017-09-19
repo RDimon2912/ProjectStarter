@@ -53,7 +53,10 @@ public class UserService {
         if (user.getRegistrationDate() == null) {
             user.setRegistrationDate(new java.sql.Timestamp(new java.util.Date().getTime()));
         }
-        userRepository.save(user);
+        user = userRepository.saveAndFlush(user);
+        Biography biography = biographyRepository.findById(user.getBiography().getId());
+        biography.setUser(user);
+        biographyRepository.save(biography);
     }
 
     @Transactional()

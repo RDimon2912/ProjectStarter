@@ -69,4 +69,12 @@ public class Project {
     @OneToMany(mappedBy = "project",
             cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<DonateSystem> donateSystemList;
+
+    @OneToMany(mappedBy = "project",
+            cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Subscription> subscriptionList;
+
+    @OneToMany(mappedBy = "project",
+            cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Donate> donateList;
 }

@@ -55,6 +55,7 @@ public class ProjectService {
     private final CommentRepository commentRepository;
     private final DonateSystemRepository donateSystemRepository;
     private final DonateRepository donateRepository;
+    private final UserRepository userRepository;
 
     private final ProjectTransformer projectTransformer;
     private final NewsTransformer newsTransformer;
