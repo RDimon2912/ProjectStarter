@@ -118,5 +118,17 @@ public class ProjectController {
     ) {
         return projectService.subscription(userId, projectId);
     }
+
+    @GetMapping(value = "/last_created")
+    @ResponseStatus(value = HttpStatus.OK)
+    public List<ProjectDto> findLastCreatedProjects() {
+        return projectService.findLastCreatedProjects();
+    }
+
+    @GetMapping(value = "/successfully_financed")
+    @ResponseStatus(value = HttpStatus.OK)
+    public List<ProjectDto> findSuccessfullyFinancedProjects() {
+        return projectService.findSuccessfullyFinancedProjects();
+    }
 }
 

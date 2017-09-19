@@ -14,7 +14,6 @@ import com.projectstarter.ProjectStarter.service.dto.subscribe.SubscribeRequestD
 import com.projectstarter.ProjectStarter.service.dto.subscribe.SubscribeResponseDto;
 import com.projectstarter.ProjectStarter.service.transformer.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -25,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import com.projectstarter.ProjectStarter.model.enums.ProjectStatus;
@@ -36,8 +34,6 @@ import com.projectstarter.ProjectStarter.service.dto.project.ProjectDto;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.stream.events.Comment;
-import java.sql.Date;
 
 @Service
 @Transactional
@@ -185,7 +181,6 @@ public class ProjectService {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message);
-            System.out.println(user.getEmail());
             helper.setTo(user.getEmail());
             helper.setSubject("News on subscribed project");
             helper.setText("Hi " + user.getBiography().getName() + ",\n\n" +
@@ -250,5 +245,26 @@ public class ProjectService {
         Comments comment = commentTransformer.makeObject(commentRequestDto);
         commentRepository.save(comment);
         return true;
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProjectDto> findLastCreatedProjects() {
+        List<Project> projectList = projectRepository.findAllOrderByStartDateDescLimitN(8);
+        List<ProjectDto> projectDtoList = new ArrayList<>();
+        for (Project project: projectList) {
+            projectDtoList.add(projectTransformer.makeDto(project));
+        }
+        return projectDtoList;
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProjectDto> findSuccessfullyFinancedProjects() {
+        List<Project> projectList = projectRepository.findAllByStatusNameOrderByEndDateDescLimitN(
+                ProjectStatus.FINANCED.name(), 8);
+        List<ProjectDto> projectDtoList = new ArrayList<>();
+        for (Project project: projectList) {
+            projectDtoList.add(projectTransformer.makeDto(project));
+        }
+        return projectDtoList;
     }
 }
