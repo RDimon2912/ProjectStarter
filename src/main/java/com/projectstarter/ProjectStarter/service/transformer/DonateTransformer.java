@@ -4,6 +4,7 @@ import com.projectstarter.ProjectStarter.model.Donate;
 import com.projectstarter.ProjectStarter.model.DonateSystem;
 import com.projectstarter.ProjectStarter.repository.ProjectRepository;
 import com.projectstarter.ProjectStarter.repository.UserRepository;
+import com.projectstarter.ProjectStarter.service.dto.donate.DonateDto;
 import com.projectstarter.ProjectStarter.service.dto.payment.PaymentRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.rewards.RewardsDto;
 import lombok.RequiredArgsConstructor;
@@ -39,5 +40,14 @@ public class DonateTransformer {
         rewardsDto.setAmount(donateSystem.getAmount());
         rewardsDto.setId(donateSystem.getId());
         return rewardsDto;
+    }
+
+    public DonateDto makeObjectDonateDto(final Donate donate) {
+        DonateDto donateDto = new DonateDto();
+        donateDto.setId(donate.getId());
+        donateDto.setUserId(donate.getUser().getId());
+        donateDto.setProjectId(donate.getProject().getId());
+        donateDto.setAmount(donate.getAmount());
+        return donateDto;
     }
 }
