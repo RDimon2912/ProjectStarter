@@ -162,6 +162,17 @@ public class ProjectService {
         return newsTransformer.makeDto(news);
     }
 
+    public RewardsDto createReward(RewardsDto rewardsDto, HttpServletRequest request) {
+        checkIsFrontUserServerUser(
+                Role.ROLE_CONFIRMED_USER,
+                projectRepository.findById(rewardsDto.getProjectId()).getUser().getId(),
+                "You don't have permission for adding news to this project."
+        );
+        DonateSystem donateSystem = donateTransformer.makeObjectDS(rewardsDto);
+        donateSystem = donateSystemRepository.saveAndFlush(donateSystem);
+        return donateTransformer.makeDto(donateSystem);
+    }
+
     private void sendNewsToSubscribedUsers(News news, String appUrl) {
         List<Subscription> subscriptions = subscribeRepository.findAllByProjectId(news.getProject().getId());
         List<Subscription> goodSubscriptions = new ArrayList<>();
@@ -245,4 +256,6 @@ public class ProjectService {
         donateRepository.save(donate);
         return true;
     }
+
+
 }

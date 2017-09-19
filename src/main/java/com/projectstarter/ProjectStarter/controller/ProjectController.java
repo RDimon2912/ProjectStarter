@@ -61,6 +61,16 @@ public class ProjectController {
         return projectService.createNews(newsDto, request);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CONFIRMED_USER')")
+    @PostMapping(value = "/createReward")
+    @ResponseStatus(value = HttpStatus.OK)
+    public RewardsDto createReward(
+            @RequestBody final RewardsDto rewardsDto,
+            HttpServletRequest request
+    ) {
+        return projectService.createReward(rewardsDto, request);
+    }
+
     @GetMapping(value = "/news")
     @ResponseStatus(value = HttpStatus.OK)
     public List<NewsDto> findNews(@RequestParam("project_id") Long projectId) {
