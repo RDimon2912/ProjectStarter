@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 @Getter
 @Setter
@@ -18,5 +19,5 @@ public class CommentsDto implements Dto {
     private Long projectId;
     private String username;
     private String comment;
-    private Date date;
+    private Timestamp date;
 }

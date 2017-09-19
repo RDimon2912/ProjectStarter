@@ -7,6 +7,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "news")
@@ -31,5 +32,5 @@ public class News {
     private String newsText;
 
     @Column(name = "date")
-    private Date date;
+    private Timestamp date;
 }

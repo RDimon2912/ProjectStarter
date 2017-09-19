@@ -31,7 +31,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private static final String[] allowedUrlsForPost = new String[]{ "/auth/login", "/user/user-info/save-changes",
             "/auth/registration", "/auth/confirm"};
     private static final String[] allowedUrlsForGet = new String[]{ "/project/info", "/project/news",
-            "/project/comments", "/project/rewards"};
+            "/project/comments", "/project/rewards", "/project/project_goals"};
 
 
     private final JwtAuthenticationProvider jwtAuthenticationProvider;

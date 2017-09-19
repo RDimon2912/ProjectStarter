@@ -3,6 +3,7 @@ package com.projectstarter.ProjectStarter.controller;
 import com.projectstarter.ProjectStarter.service.ProjectService;
 import com.projectstarter.ProjectStarter.service.dto.comments.CommentRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.comments.CommentsDto;
+import com.projectstarter.ProjectStarter.service.dto.goal.GoalDto;
 import com.projectstarter.ProjectStarter.service.dto.news.NewsDto;
 import com.projectstarter.ProjectStarter.service.dto.payment.PaymentRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectCreateRequestDto;
@@ -69,6 +70,21 @@ public class ProjectController {
             HttpServletRequest request
     ) {
         return projectService.createReward(rewardsDto, request);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CONFIRMED_USER')")
+    @PostMapping(value = "/createGoal")
+    @ResponseStatus(value = HttpStatus.OK)
+    public GoalDto createGoal(
+            @RequestBody final GoalDto goalDto
+    ) {
+        return projectService.createGoal(goalDto);
+    }
+
+    @GetMapping(value = "/project_goals")
+    @ResponseStatus(value = HttpStatus.OK)
+    public List<GoalDto> findProjectGoals(@RequestParam("project_id") Long projectId) {
+        return projectService.findGoalsByProjectId(projectId);
     }
 
     @GetMapping(value = "/news")

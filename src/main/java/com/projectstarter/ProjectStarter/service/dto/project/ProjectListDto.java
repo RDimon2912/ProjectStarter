@@ -3,6 +3,8 @@ package com.projectstarter.ProjectStarter.service.dto.project;
 import com.projectstarter.ProjectStarter.service.dto.Dto;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Getter
@@ -12,6 +14,6 @@ public class ProjectListDto implements Dto {
     private long id;
     private String user_id;
     private String title;
-    private Date start_date;
-    private Date end_date;
+    private Timestamp start_date;
+    private Timestamp end_date;
 }

@@ -7,6 +7,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "users")
@@ -42,10 +43,10 @@ public class User {
     private BlockStatus blockStatus;
 
     @Column(name = "last_log_in")
-    private Date lastLogIn;
+    private Timestamp lastLogIn;
 
     @Column(name = "registration_date")
-    private Date registrationDate;
+    private Timestamp registrationDate;
 
     @Column(name = "confirmed")
     private boolean confirmed;

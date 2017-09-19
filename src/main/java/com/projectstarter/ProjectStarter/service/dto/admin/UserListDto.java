@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Getter
@@ -18,8 +20,8 @@ public class UserListDto implements Dto, Comparable {
     private String email;
     private Role role;
     private BlockStatus block_status;
-    private Date registration_date;
-    private Date last_log_in;
+    private Timestamp registration_date;
+    private Timestamp last_log_in;
     private int amountOfProjects;
 
     @Override

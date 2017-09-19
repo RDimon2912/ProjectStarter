@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "goals")
@@ -26,10 +27,6 @@ public class Goal {
     @Column(name = "amount")
     private int amount;
 
-    @Column(name = "date")
-    private Date date;
-
-    @Column(name = "status")
-    @Enumerated(EnumType.STRING)
-    private ProjectStatus status;
+    @Column(name = "goal_text")
+    private String goalText;
 }

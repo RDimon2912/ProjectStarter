@@ -8,6 +8,7 @@ import com.projectstarter.ProjectStarter.service.dto.comments.CommentsDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.sql.Date;
 import java.util.Calendar;
 
 
@@ -35,8 +36,11 @@ public class CommentTransformer {
         comments.setUser(userRepository.findById(commentRequestDto.userId));
         comments.setComment(commentRequestDto.commentText);
         comments.setProject(projectRepository.findById(commentRequestDto.projectId));
-        java.sql.Date ourJavaDateObject = new java.sql.Date(Calendar.getInstance().getTime().getTime());
-        comments.setDate(ourJavaDateObject);
+
+        comments.setDate(new java.sql.Timestamp(new java.util.Date().getTime()));
+
+//        java.sql.Date ourJavaDateObject = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+//        comments.setDate(ourJavaDateObject);
         return comments;
     }
 }

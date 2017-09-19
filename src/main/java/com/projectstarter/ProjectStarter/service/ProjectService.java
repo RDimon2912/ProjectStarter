@@ -8,6 +8,7 @@ import com.projectstarter.ProjectStarter.security.model.JwtUserDetails;
 import com.projectstarter.ProjectStarter.service.dto.*;
 import com.projectstarter.ProjectStarter.service.dto.comments.CommentRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.comments.CommentsDto;
+import com.projectstarter.ProjectStarter.service.dto.goal.GoalDto;
 import com.projectstarter.ProjectStarter.service.dto.news.NewsDto;
 import com.projectstarter.ProjectStarter.service.dto.payment.PaymentRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectListDto;
@@ -51,6 +52,7 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final NewsRepository newsRepository;
+    private final GoalRepository goalRepository;
     private final SubscribeRepository subscribeRepository;
     private final CommentRepository commentRepository;
     private final DonateSystemRepository donateSystemRepository;
@@ -58,6 +60,7 @@ public class ProjectService {
 
     private final ProjectTransformer projectTransformer;
     private final NewsTransformer newsTransformer;
+    private final GoalTransformer goalTransformer;
     private final CommentTransformer commentTransformer;
     private final SubscriptionTransformer subscriptionTransformer;
     private final RewardTransformer rewardTransformer;
@@ -87,7 +90,7 @@ public class ProjectService {
         project.setUser(user);
 
         project.setTitle(projectCreateRequestDto.getTitle());
-        project.setStartDate(new Date((new java.util.Date()).getTime()));
+        project.setStartDate(new java.sql.Timestamp(new java.util.Date().getTime()));
         project.setEndDate(projectCreateRequestDto.getEndDate());
         project.setStatus(ProjectStatus.IN_PROGRESS);
         project.setTargetAmount(projectCreateRequestDto.getTargetAmount());
@@ -102,6 +105,16 @@ public class ProjectService {
     public ProjectDto findProject(Long projectId) {
         Project project = projectRepository.findById(projectId);
         return projectTransformer.makeDto(project);
+    }
+
+    @Transactional(readOnly = true)
+    public List<GoalDto> findGoalsByProjectId(Long projectId) {
+        List<Goal> goalList = goalRepository.findAllByProjectId(projectId);
+        List<GoalDto> goalDtoList = new ArrayList<>();
+        for (Goal goal: goalList) {
+            goalDtoList.add(goalTransformer.makeDto(goal));
+        }
+        return goalDtoList;
     }
 
     @Transactional(readOnly = true)
@@ -153,7 +166,7 @@ public class ProjectService {
                 );
 
         News news = newsTransformer.makeObject(newsDto);
-        news.setDate(new Date(Calendar.getInstance().getTime().getTime()));
+        news.setDate(new java.sql.Timestamp(new java.util.Date().getTime()));
         news = newsRepository.saveAndFlush(news);
 
         String appUrl = request.getScheme() + "://" + request.getServerName() + ":4200";
@@ -208,6 +221,19 @@ public class ProjectService {
         } catch (MessagingException e) {
             e.printStackTrace();
         }
+    }
+
+    public GoalDto createGoal(GoalDto goalDto) {
+        checkIsFrontUserServerUser(
+                Role.ROLE_CONFIRMED_USER,
+                projectRepository.findById(goalDto.getProjectId()).getUser().getId(),
+                "You don't have permission for adding goals to this project."
+        );
+
+        Goal goal = goalTransformer.makeObject(goalDto);
+        goal = goalRepository.saveAndFlush(goal);
+
+        return goalTransformer.makeDto(goal);
     }
 
     public SubscribeResponseDto subscribe(SubscribeRequestDto subscribeRequestDto) {

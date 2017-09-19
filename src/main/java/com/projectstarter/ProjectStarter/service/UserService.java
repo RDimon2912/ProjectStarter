@@ -51,7 +51,7 @@ public class UserService {
     public void save(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         if (user.getRegistrationDate() == null) {
-            user.setRegistrationDate(new Date(Calendar.getInstance().getTime().getTime()));
+            user.setRegistrationDate(new java.sql.Timestamp(new java.util.Date().getTime()));
         }
         userRepository.save(user);
     }
