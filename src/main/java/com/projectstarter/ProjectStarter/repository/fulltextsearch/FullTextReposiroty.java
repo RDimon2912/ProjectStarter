@@ -38,7 +38,12 @@ public class FullTextReposiroty {
 
     private org.apache.lucene.search.Query createQuery(QueryBuilder queryBuilder, String searchQuery) {
         return queryBuilder.keyword().onFields("title",
-                "description")
+                                                        "description",
+                                                        "newsList.title",
+                                                        "newsList.newsText",
+                                                        "commentsList.comment",
+                                                        "goalList.goalText",
+                                                        "donateSystemList.description")
                 .matching(searchQuery).createQuery();
     }
 }

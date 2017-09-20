@@ -23,7 +23,7 @@ public class SearchIndexBuilder implements ApplicationListener<ApplicationReadyE
                     Search.getFullTextEntityManager(entityManager);
             fullTextEntityManager.createIndexer().startAndWait();
         } catch (InterruptedException ex) {
-            System.out.println("An error occurred trying to build the serach index: " + ex.toString());
+            System.out.println("An error occurred trying to build the search index: " + ex.toString());
         }
     }
 }
