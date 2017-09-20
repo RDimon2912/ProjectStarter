@@ -170,6 +170,12 @@ public class ProjectService {
         news.setDate(new java.sql.Timestamp(new java.util.Date().getTime()));
         news = newsRepository.saveAndFlush(news);
 
+        Project project = projectRepository.findById(news.getProject().getId());
+        List<News> newsList = newsRepository.findAllByProjectId(project.getId());
+        newsList.add(news);
+        project.setNewsList(newsList);
+        projectRepository.save(project);
+
         String appUrl = request.getScheme() + "://" + request.getServerName() + ":4200";
         sendNewsToSubscribedUsers(news, appUrl);
 
