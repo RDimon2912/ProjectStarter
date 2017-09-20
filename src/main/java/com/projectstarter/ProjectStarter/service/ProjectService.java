@@ -304,8 +304,8 @@ public class ProjectService {
         return true;
     }
 
-    public List<ProjectDto> search(String requestString) {
-        List<Project> projectList = fullTextReposiroty.fullTextSearch(requestString, 0);
+    public List<ProjectDto> search(String requestString, int offset) {
+        List<Project> projectList = fullTextReposiroty.fullTextSearch(requestString, offset);
         List<ProjectDto> projectDtoList = new ArrayList<>();
         for (Project project: projectList) {
             projectDtoList.add(projectTransformer.makeDto(project));

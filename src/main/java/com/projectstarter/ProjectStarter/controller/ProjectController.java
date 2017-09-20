@@ -160,8 +160,11 @@ public class ProjectController {
 
     @GetMapping(value = "/search")
     @ResponseStatus(value = HttpStatus.OK)
-    public List<ProjectDto> search(@RequestParam("requestString") String requestString) {
-        return projectService.search(requestString);
+    public List<ProjectDto> search(
+            @RequestParam("requestString") String requestString,
+            @RequestParam("offset") int offset
+    ) {
+        return projectService.search(requestString, offset);
     }
 }
 
