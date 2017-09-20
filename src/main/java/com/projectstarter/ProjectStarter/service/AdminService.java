@@ -75,18 +75,31 @@ public class AdminService {
                 List<Comments> commentsList = commentRepository.findAllByUserId(userId);
                 for (Comments comment:
                         commentsList) {
-                    comment.setUser(userRepository.findById(52L));
+                    comment.setUser(userRepository.findById(2L));
                     commentRepository.save(comment);
+                }
+            } else {
+                List<Comments> commentsList = commentRepository.findAllByUserId(userId);
+                for (Comments comment:
+                        commentsList) {
+                    commentRepository.delete(comment);
                 }
             }
             if (!projects) {
                 List<Project> projectList = projectRepository.findAllByUserId(userId);
                 for (Project project:
                         projectList) {
-                    project.setUser(userRepository.findById(52L));
+                    project.setUser(userRepository.findById(2L));
                     projectRepository.save(project);
                 }
+            } else {
+                List<Project> projectList = projectRepository.findAllByUserId(userId);
+                for (Project project:
+                        projectList) {
+                    projectRepository.delete(project);
+                }
             }
+
             userRepository.delete(curUser);
         }
         return true;
