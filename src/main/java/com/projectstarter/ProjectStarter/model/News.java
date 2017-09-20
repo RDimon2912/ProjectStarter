@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.search.annotations.Field;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -25,9 +26,11 @@ public class News {
     private Project project;
 
     @Column(name = "title")
+    @Field
     private String title;
 
     @Column(name = "news_text")
+    @Field
     private String newsText;
 
     @Column(name = "date")

@@ -4,6 +4,7 @@ import com.projectstarter.ProjectStarter.model.*;
 import com.projectstarter.ProjectStarter.model.DonateSystem;
 import com.projectstarter.ProjectStarter.model.enums.Role;
 import com.projectstarter.ProjectStarter.repository.*;
+import com.projectstarter.ProjectStarter.repository.fulltextsearch.FullTextReposiroty;
 import com.projectstarter.ProjectStarter.security.model.JwtUserDetails;
 import com.projectstarter.ProjectStarter.service.dto.*;
 import com.projectstarter.ProjectStarter.service.dto.comments.CommentRequestDto;
@@ -48,6 +49,7 @@ public class ProjectService {
     private final JavaMailSender mailSender;
     private final Environment environment;
 
+    private final FullTextReposiroty fullTextReposiroty;
     private final ProjectRepository projectRepository;
     private final NewsRepository newsRepository;
     private final GoalRepository goalRepository;
@@ -300,5 +302,14 @@ public class ProjectService {
         Donate donate = donateTransformer.makeObject(paymentRequestDto);
         donateRepository.save(donate);
         return true;
+    }
+
+    public List<ProjectDto> search(String requestString, int offset) {
+        List<Project> projectList = fullTextReposiroty.fullTextSearch(requestString, offset);
+        List<ProjectDto> projectDtoList = new ArrayList<>();
+        for (Project project: projectList) {
+            projectDtoList.add(projectTransformer.makeDto(project));
+        }
+        return projectDtoList;
     }
 }

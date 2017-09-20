@@ -5,17 +5,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
 
-@ToString
 @Entity
 @Table(name = "projects")
 @Getter
 @Setter
 @NoArgsConstructor
+@Indexed
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,12 +30,14 @@ public class Project {
     private User user;
 
     @Column(name = "title")
+    @Field
     private String title;
 
     @Column(name = "image_url")
     private String imageUrl;
 
     @Column(name = "description")
+    @Field
     private String description;
 
     @Column(name = "target_amount")
@@ -56,18 +61,22 @@ public class Project {
 
     @OneToMany(mappedBy = "project",
             cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @IndexedEmbedded
     private List<News> newsList;
 
     @OneToMany(mappedBy = "project",
             cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @IndexedEmbedded
     private List<Comments> commentsList;
 
     @OneToMany(mappedBy = "project",
             cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @IndexedEmbedded
     private List<Goal> goalList;
 
     @OneToMany(mappedBy = "project",
             cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @IndexedEmbedded
     private List<DonateSystem> donateSystemList;
 
     @OneToMany(mappedBy = "project",
