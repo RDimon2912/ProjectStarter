@@ -170,6 +170,12 @@ public class ProjectService {
         news.setDate(new java.sql.Timestamp(new java.util.Date().getTime()));
         news = newsRepository.saveAndFlush(news);
 
+        Project project = projectRepository.findById(news.getProject().getId());
+        List<News> newsList = newsRepository.findAllByProjectId(project.getId());
+        newsList.add(news);
+        project.setNewsList(newsList);
+        projectRepository.save(project);
+
         String appUrl = request.getScheme() + "://" + request.getServerName() + ":4200";
         sendNewsToSubscribedUsers(news, appUrl);
 
@@ -184,6 +190,13 @@ public class ProjectService {
         );
         DonateSystem donateSystem = donateTransformer.makeObjectDS(rewardsDto);
         donateSystem = donateSystemRepository.saveAndFlush(donateSystem);
+
+        Project project = projectRepository.findById(donateSystem.getProject().getId());
+        List<DonateSystem> donateSystemList = donateSystemRepository.findAllByProjectId(project.getId());
+        donateSystemList.add(donateSystem);
+        project.setDonateSystemList(donateSystemList);
+        projectRepository.save(project);
+
         return donateTransformer.makeDto(donateSystem);
     }
 
@@ -233,6 +246,12 @@ public class ProjectService {
         Goal goal = goalTransformer.makeObject(goalDto);
         goal = goalRepository.saveAndFlush(goal);
 
+        Project project = projectRepository.findById(goal.getProject().getId());
+        List<Goal> goalList = goalRepository.findAllByProjectId(project.getId());
+        goalList.add(goal);
+        project.setGoalList(goalList);
+        projectRepository.save(project);
+
         return goalTransformer.makeDto(goal);
     }
 
@@ -273,7 +292,13 @@ public class ProjectService {
 
     public boolean addComment(CommentRequestDto commentRequestDto) {
         Comments comment = commentTransformer.makeObject(commentRequestDto);
-        commentRepository.save(comment);
+        comment = commentRepository.saveAndFlush(comment);
+
+        Project project = projectRepository.findById(comment.getProject().getId());
+        List<Comments> commentsList = commentRepository.findAllByProjectId(project.getId());
+        commentsList.add(comment);
+        project.setCommentsList(commentsList);
+        projectRepository.save(project);
         return true;
     }
 
