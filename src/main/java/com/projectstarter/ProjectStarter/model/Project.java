@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
@@ -38,6 +39,7 @@ public class Project {
 
     @Column(name = "description")
     @Field
+    @Type(type = "text")
     private String description;
 
     @Column(name = "target_amount")

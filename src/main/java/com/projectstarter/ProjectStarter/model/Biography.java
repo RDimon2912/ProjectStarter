@@ -3,6 +3,7 @@ package com.projectstarter.ProjectStarter.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
@@ -26,6 +27,7 @@ public class Biography {
     private String name;
 
     @Column(name = "biography")
+    @Type(type = "text")
     private String biography;
 
     @Column(name = "location")

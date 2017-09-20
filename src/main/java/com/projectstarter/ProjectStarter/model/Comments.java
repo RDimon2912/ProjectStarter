@@ -3,7 +3,9 @@ package com.projectstarter.ProjectStarter.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -29,6 +31,7 @@ public class Comments {
 
     @Column(name = "comment")
     @Field
+    @Type(type = "text")
     private String comment;
 
     @Column(name = "date")
