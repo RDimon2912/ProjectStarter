@@ -190,6 +190,13 @@ public class ProjectService {
         );
         DonateSystem donateSystem = donateTransformer.makeObjectDS(rewardsDto);
         donateSystem = donateSystemRepository.saveAndFlush(donateSystem);
+
+        Project project = projectRepository.findById(donateSystem.getProject().getId());
+        List<DonateSystem> donateSystemList = donateSystemRepository.findAllByProjectId(project.getId());
+        donateSystemList.add(donateSystem);
+        project.setDonateSystemList(donateSystemList);
+        projectRepository.save(project);
+
         return donateTransformer.makeDto(donateSystem);
     }
 
