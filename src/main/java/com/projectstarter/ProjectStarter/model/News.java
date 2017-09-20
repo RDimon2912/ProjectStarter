@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Field;
 
 import javax.persistence.*;
@@ -31,6 +32,7 @@ public class News {
 
     @Column(name = "news_text")
     @Field
+    @Type(type = "text")
     private String newsText;
 
     @Column(name = "date")

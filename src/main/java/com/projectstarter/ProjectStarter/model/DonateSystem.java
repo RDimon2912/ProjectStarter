@@ -3,6 +3,7 @@ package com.projectstarter.ProjectStarter.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Field;
 
 import javax.persistence.*;
@@ -27,5 +28,6 @@ public class DonateSystem {
 
     @Column(name = "description")
     @Field
+    @Type(type = "text")
     private String description;
 }
