@@ -152,7 +152,7 @@ public class AdminService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseScanDto getPassportScan(String email) {
-        CreatorRequest creatorRequest = creatorRepository.findByUser(userRepository.findByEmail(email).getId());
+        CreatorRequest creatorRequest = creatorRepository.findByUser(userRepository.findByEmail(email));
         ResponseScanDto responseScanDto = new ResponseScanDto();
         responseScanDto.setPassportScan(creatorRequest.getImage());
         return responseScanDto;
@@ -164,7 +164,7 @@ public class AdminService {
         User user = userRepository.findByEmail(email);
         user.setRole(Role.ROLE_CONFIRMED_USER);
         userRepository.save(user);
-        CreatorRequest creatorRequest = creatorRepository.findByUser(user.getId());
+        CreatorRequest creatorRequest = creatorRepository.findByUser(user);
         creatorRepository.delete(creatorRequest);
         return true;
     }
@@ -175,7 +175,7 @@ public class AdminService {
         User user = userRepository.findByEmail(email);
         user.setRole(Role.ROLE_USER);
         userRepository.save(user);
-        CreatorRequest creatorRequest = creatorRepository.findByUser(user.getId());
+        CreatorRequest creatorRequest = creatorRepository.findByUser(user);
         creatorRepository.delete(creatorRequest);
         return true;
     }
