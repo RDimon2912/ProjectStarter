@@ -246,6 +246,12 @@ public class ProjectService {
         Goal goal = goalTransformer.makeObject(goalDto);
         goal = goalRepository.saveAndFlush(goal);
 
+        Project project = projectRepository.findById(goal.getProject().getId());
+        List<Goal> goalList = goalRepository.findAllByProjectId(project.getId());
+        goalList.add(goal);
+        project.setGoalList(goalList);
+        projectRepository.save(project);
+
         return goalTransformer.makeDto(goal);
     }
 
