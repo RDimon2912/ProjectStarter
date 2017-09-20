@@ -157,5 +157,11 @@ public class ProjectController {
     ) {
         return projectService.pay(paymentRequestDto);
     }
+
+    @GetMapping(value = "/search")
+    @ResponseStatus(value = HttpStatus.OK)
+    public List<ProjectDto> search(@RequestParam("requestString") String requestString) {
+        return projectService.search(requestString);
+    }
 }
 
