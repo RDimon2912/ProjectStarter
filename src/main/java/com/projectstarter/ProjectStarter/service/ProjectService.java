@@ -292,7 +292,13 @@ public class ProjectService {
 
     public boolean addComment(CommentRequestDto commentRequestDto) {
         Comments comment = commentTransformer.makeObject(commentRequestDto);
-        commentRepository.save(comment);
+        comment = commentRepository.saveAndFlush(comment);
+
+        Project project = projectRepository.findById(comment.getProject().getId());
+        List<Comments> commentsList = commentRepository.findAllByProjectId(project.getId());
+        commentsList.add(comment);
+        project.setCommentsList(commentsList);
+        projectRepository.save(project);
         return true;
     }
 
