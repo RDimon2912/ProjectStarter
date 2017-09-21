@@ -22,7 +22,7 @@ public class DonateService {
 
     @Transactional(readOnly = true)
     public List<DonateDto> findTheBiggestDonations() {
-        List<Donate> donateList = donateRepository.findAllOrderByAmountDescLimitN(10);
+        List<Donate> donateList = donateRepository.findAllOrderByAmountDescLimitN(3);
         List<DonateDto> donateDtoList = new ArrayList<>();
         for (Donate donate: donateList) {
             donateDtoList.add(donateTransformer.makeObjectDonateDto(donate));
