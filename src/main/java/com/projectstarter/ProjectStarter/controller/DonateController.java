@@ -1,14 +1,13 @@
 package com.projectstarter.ProjectStarter.controller;
 
 import com.projectstarter.ProjectStarter.service.DonateService;
+import com.projectstarter.ProjectStarter.service.UserService;
 import com.projectstarter.ProjectStarter.service.dto.donate.DonateDto;
+import com.projectstarter.ProjectStarter.service.dto.user.BiographyDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,10 +16,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DonateController {
     private final DonateService donateService;
+    private final UserService userService;
 
     @GetMapping(value = "/the-biggest")
     @ResponseStatus(value = HttpStatus.OK)
     public List<DonateDto> findTheBiggestDonations() {
         return donateService.findTheBiggestDonations();
+    }
+
+    @GetMapping(value = "/user-biography")
+    @ResponseStatus(value = HttpStatus.OK)
+    public BiographyDto findUserBiography(
+            @RequestParam("user_id") Long userId
+    ) {
+        return userService.findUserBiography(userId);
     }
 }
