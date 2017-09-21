@@ -24,4 +24,5 @@ public class ProjectDto {
     private Timestamp endDate;
     private String projectStatus;
     private String imageUrl;
+    private int amountOfDonates;
 }

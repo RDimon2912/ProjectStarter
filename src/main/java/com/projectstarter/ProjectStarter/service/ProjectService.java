@@ -13,6 +13,8 @@ import com.projectstarter.ProjectStarter.service.dto.goal.GoalDto;
 import com.projectstarter.ProjectStarter.service.dto.news.NewsDto;
 import com.projectstarter.ProjectStarter.service.dto.payment.PaymentRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectListDto;
+import com.projectstarter.ProjectStarter.service.dto.rating.RatingRequestDto;
+import com.projectstarter.ProjectStarter.service.dto.rating.ResponseRatingDto;
 import com.projectstarter.ProjectStarter.service.dto.rewards.RewardsDto;
 import com.projectstarter.ProjectStarter.service.dto.subscribe.SubscribeRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.subscribe.SubscribeResponseDto;
@@ -57,7 +59,7 @@ public class ProjectService {
     private final CommentRepository commentRepository;
     private final DonateSystemRepository donateSystemRepository;
     private final DonateRepository donateRepository;
-    private final UserRepository userRepository;
+    private final RatingRepository ratingRepository;
 
     private final ProjectTransformer projectTransformer;
     private final NewsTransformer newsTransformer;
@@ -66,7 +68,7 @@ public class ProjectService {
     private final SubscriptionTransformer subscriptionTransformer;
     private final RewardTransformer rewardTransformer;
     private final DonateTransformer donateTransformer;
-
+    private final RatingTransformer ratingTransformer;
     private final ProjectListTransformer projectListTransformer;
 
     @Transactional(readOnly = true)
@@ -105,7 +107,9 @@ public class ProjectService {
     @Transactional(readOnly = true)
     public ProjectDto findProject(Long projectId) {
         Project project = projectRepository.findById(projectId);
-        return projectTransformer.makeDto(project);
+        ProjectDto projectDto = projectTransformer.makeDto(project);
+        projectDto.setAmountOfDonates(donateRepository.countAllByProjectId(projectId));
+        return projectDto;
     }
 
     @Transactional(readOnly = true)
@@ -302,6 +306,29 @@ public class ProjectService {
         return true;
     }
 
+    public ResponseRatingDto addRating(RatingRequestDto ratingRequestDto) {
+        Rating rating = ratingRepository.findByUserIdAndProjectId(ratingRequestDto.getUserId(), ratingRequestDto.getProjectId());
+        if (rating == null) {
+            rating = ratingTransformer.makeObject(ratingRequestDto);
+        } else {
+            rating.setScore(ratingRequestDto.getScore());
+        }
+        ratingRepository.save(rating);
+        Project project = projectRepository.findById(ratingRequestDto.getProjectId());
+        double sum = 0;
+        List<Rating> ratingList = ratingRepository.findAllByProjectId(project.getId());
+        for (Rating rat : ratingList) {
+            sum += rat.getScore();
+        }
+        double x = Math.floor(sum/ratingList.size() * 100) / 100;
+        project.setRating(x);
+        projectRepository.save(project);
+        ResponseRatingDto responseRatingDto = new ResponseRatingDto();
+        responseRatingDto.setAmountOfPeople(ratingList.size());
+        responseRatingDto.setRating(x);
+        return responseRatingDto;
+    }
+
     @Transactional(readOnly = true)
     public List<ProjectDto> findLastCreatedProjects() {
         List<Project> projectList = projectRepository.findAllOrderByStartDateDescLimitN(8);
@@ -326,6 +353,10 @@ public class ProjectService {
     public boolean pay(PaymentRequestDto paymentRequestDto) {
         Donate donate = donateTransformer.makeObject(paymentRequestDto);
         donateRepository.save(donate);
+        Project project = projectRepository.findById(paymentRequestDto.getProjectId());
+        project.setCurrentAmount(project.getCurrentAmount() + donate.getAmount());
+        checkProjectStatus(project);
+        projectRepository.save(project);
         return true;
     }
 
@@ -337,4 +368,11 @@ public class ProjectService {
         }
         return projectDtoList;
     }
+
+    public void checkProjectStatus(Project project) {
+        if (project.getTargetAmount() - project.getCurrentAmount() <= 0) {
+            project.setStatus(ProjectStatus.FINANCED);
+        }
+    }
+
 }
