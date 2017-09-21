@@ -44,7 +44,8 @@ public class FullTextReposiroty {
                                                         "newsList.newsText",
                                                         "commentsList.comment",
                                                         "goalList.goalText",
-                                                        "donateSystemList.description")
+                                                        "donateSystemList.description",
+                                                        "tags.tagName")
                 .matching(searchQuery + '*').createQuery();
     }
 }

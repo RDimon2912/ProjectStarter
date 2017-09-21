@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -25,4 +26,5 @@ public class ProjectDto {
     private String projectStatus;
     private String imageUrl;
     private int amountOfDonates;
+    private Set<String> tags;
 }
