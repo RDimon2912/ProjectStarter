@@ -9,6 +9,7 @@ import com.projectstarter.ProjectStarter.service.dto.payment.PaymentRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectCreateRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectCreateResponseDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectDto;
+import com.projectstarter.ProjectStarter.service.dto.rating.RatingRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.rewards.RewardsDto;
 import com.projectstarter.ProjectStarter.service.dto.subscribe.SubscribeRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.subscribe.SubscribeResponseDto;
@@ -124,6 +125,15 @@ public class ProjectController {
             @RequestBody final CommentRequestDto commentRequestDto
     ) {
         return projectService.addComment(commentRequestDto);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_WAIT_CONFIRM', 'ROLE_CONFIRMED_USER', 'ROLE_ADMIN')")
+    @PostMapping(value = "/addRating")
+    @ResponseStatus(value = HttpStatus.OK)
+    public boolean addRating(
+            @RequestBody final RatingRequestDto ratingRequestDto
+    ) {
+        return projectService.addRating(ratingRequestDto);
     }
 
 

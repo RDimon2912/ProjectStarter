@@ -13,6 +13,7 @@ import com.projectstarter.ProjectStarter.service.dto.goal.GoalDto;
 import com.projectstarter.ProjectStarter.service.dto.news.NewsDto;
 import com.projectstarter.ProjectStarter.service.dto.payment.PaymentRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectListDto;
+import com.projectstarter.ProjectStarter.service.dto.rating.RatingRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.rewards.RewardsDto;
 import com.projectstarter.ProjectStarter.service.dto.subscribe.SubscribeRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.subscribe.SubscribeResponseDto;
@@ -57,7 +58,7 @@ public class ProjectService {
     private final CommentRepository commentRepository;
     private final DonateSystemRepository donateSystemRepository;
     private final DonateRepository donateRepository;
-    private final UserRepository userRepository;
+    private final RatingRepository ratingRepository;
 
     private final ProjectTransformer projectTransformer;
     private final NewsTransformer newsTransformer;
@@ -66,7 +67,7 @@ public class ProjectService {
     private final SubscriptionTransformer subscriptionTransformer;
     private final RewardTransformer rewardTransformer;
     private final DonateTransformer donateTransformer;
-
+    private final RatingTransformer ratingTransformer;
     private final ProjectListTransformer projectListTransformer;
 
     @Transactional(readOnly = true)
@@ -302,6 +303,12 @@ public class ProjectService {
         return true;
     }
 
+    public boolean addRating(RatingRequestDto ratingRequestDto) {
+        Rating rating = ratingTransformer.makeObject(ratingRequestDto);
+        ratingRepository.save(rating);
+        return true;
+    }
+
     @Transactional(readOnly = true)
     public List<ProjectDto> findLastCreatedProjects() {
         List<Project> projectList = projectRepository.findAllOrderByStartDateDescLimitN(8);
@@ -337,4 +344,6 @@ public class ProjectService {
         }
         return projectDtoList;
     }
+
+
 }
