@@ -107,7 +107,9 @@ public class ProjectService {
     @Transactional(readOnly = true)
     public ProjectDto findProject(Long projectId) {
         Project project = projectRepository.findById(projectId);
-        return projectTransformer.makeDto(project);
+        ProjectDto projectDto = projectTransformer.makeDto(project);
+        projectDto.setAmountOfDonates(donateRepository.countAllByProjectId(projectId));
+        return projectDto;
     }
 
     @Transactional(readOnly = true)
