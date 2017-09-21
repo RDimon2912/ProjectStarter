@@ -14,6 +14,7 @@ import com.projectstarter.ProjectStarter.service.dto.news.NewsDto;
 import com.projectstarter.ProjectStarter.service.dto.payment.PaymentRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectListDto;
 import com.projectstarter.ProjectStarter.service.dto.rating.RatingRequestDto;
+import com.projectstarter.ProjectStarter.service.dto.rating.ResponseRatingDto;
 import com.projectstarter.ProjectStarter.service.dto.rewards.RewardsDto;
 import com.projectstarter.ProjectStarter.service.dto.subscribe.SubscribeRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.subscribe.SubscribeResponseDto;
@@ -303,7 +304,7 @@ public class ProjectService {
         return true;
     }
 
-    public double addRating(RatingRequestDto ratingRequestDto) {
+    public ResponseRatingDto addRating(RatingRequestDto ratingRequestDto) {
         Rating rating = ratingTransformer.makeObject(ratingRequestDto);
         ratingRepository.save(rating);
         Project project = projectRepository.findById(ratingRequestDto.getProjectId());
@@ -315,7 +316,10 @@ public class ProjectService {
         double x = Math.floor(sum/ratingList.size() * 100) / 100;
         project.setRating(x);
         projectRepository.save(project);
-        return x;
+        ResponseRatingDto responseRatingDto = new ResponseRatingDto();
+        responseRatingDto.setAmountOfPeople(ratingList.size());
+        responseRatingDto.setRating(x);
+        return responseRatingDto;
     }
 
     @Transactional(readOnly = true)

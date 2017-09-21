@@ -10,6 +10,7 @@ import com.projectstarter.ProjectStarter.service.dto.project.ProjectCreateReques
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectCreateResponseDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectDto;
 import com.projectstarter.ProjectStarter.service.dto.rating.RatingRequestDto;
+import com.projectstarter.ProjectStarter.service.dto.rating.ResponseRatingDto;
 import com.projectstarter.ProjectStarter.service.dto.rewards.RewardsDto;
 import com.projectstarter.ProjectStarter.service.dto.subscribe.SubscribeRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.subscribe.SubscribeResponseDto;
@@ -130,7 +131,7 @@ public class ProjectController {
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_WAIT_CONFIRM', 'ROLE_CONFIRMED_USER', 'ROLE_ADMIN')")
     @PostMapping(value = "/addRating")
     @ResponseStatus(value = HttpStatus.OK)
-    public double addRating(
+    public ResponseRatingDto addRating(
             @RequestBody final RatingRequestDto ratingRequestDto
     ) {
         return projectService.addRating(ratingRequestDto);
