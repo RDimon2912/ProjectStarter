@@ -303,10 +303,19 @@ public class ProjectService {
         return true;
     }
 
-    public boolean addRating(RatingRequestDto ratingRequestDto) {
+    public double addRating(RatingRequestDto ratingRequestDto) {
         Rating rating = ratingTransformer.makeObject(ratingRequestDto);
         ratingRepository.save(rating);
-        return true;
+        Project project = projectRepository.findById(ratingRequestDto.getProjectId());
+        double sum = 0;
+        List<Rating> ratingList = ratingRepository.findAllByProjectId(project.getId());
+        for (Rating rat : ratingList) {
+            sum += rat.getScore();
+        }
+        double x = Math.floor(sum/ratingList.size() * 100) / 100;
+        project.setRating(x);
+        projectRepository.save(project);
+        return x;
     }
 
     @Transactional(readOnly = true)

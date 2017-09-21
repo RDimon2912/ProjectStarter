@@ -130,7 +130,7 @@ public class ProjectController {
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_WAIT_CONFIRM', 'ROLE_CONFIRMED_USER', 'ROLE_ADMIN')")
     @PostMapping(value = "/addRating")
     @ResponseStatus(value = HttpStatus.OK)
-    public boolean addRating(
+    public double addRating(
             @RequestBody final RatingRequestDto ratingRequestDto
     ) {
         return projectService.addRating(ratingRequestDto);
