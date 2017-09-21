@@ -353,6 +353,10 @@ public class ProjectService {
     public boolean pay(PaymentRequestDto paymentRequestDto) {
         Donate donate = donateTransformer.makeObject(paymentRequestDto);
         donateRepository.save(donate);
+        Project project = projectRepository.findById(paymentRequestDto.getProjectId());
+        project.setCurrentAmount(project.getCurrentAmount() + donate.getAmount());
+        checkProjectStatus(project);
+        projectRepository.save(project);
         return true;
     }
 
@@ -365,5 +369,10 @@ public class ProjectService {
         return projectDtoList;
     }
 
+    public void checkProjectStatus(Project project) {
+        if (project.getTargetAmount() - project.getCurrentAmount() <= 0) {
+            project.setStatus(ProjectStatus.FINANCED);
+        }
+    }
 
 }
