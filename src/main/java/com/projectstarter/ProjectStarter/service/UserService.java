@@ -151,4 +151,8 @@ public class UserService {
         userRepository.save(user);
         return true;
     }
+
+    public BiographyDto findUserBiography(Long userId) {
+        return biographyTransformer.makeDto(biographyRepository.findByUserId(userId));
+    }
 }
