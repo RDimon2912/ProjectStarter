@@ -5,6 +5,7 @@ import com.projectstarter.ProjectStarter.model.Project;
 import com.projectstarter.ProjectStarter.model.Tag;
 import com.projectstarter.ProjectStarter.model.User;
 import com.projectstarter.ProjectStarter.model.enums.ProjectStatus;
+import com.projectstarter.ProjectStarter.repository.ProjectRepository;
 import com.projectstarter.ProjectStarter.repository.TagRepository;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectDto;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class ProjectTransformer {
     private final TagRepository tagRepository;
+    private final ProjectRepository projectRepository;
 
     public ProjectDto makeDto(final Project project) {
         ProjectDto projectDto = new ProjectDto();
@@ -79,26 +81,27 @@ public class ProjectTransformer {
 
     private void setProjectTags(Project project, ProjectDto projectDto) {
         Set<Tag> tags = getTagsSet(projectDto.getTags());
-        tags = switchExistTags(tags);
+        tags = switchExistTags(tags, projectDto.getId());
         project.setTags(tags);
     }
 
-    private Set<Tag> switchExistTags(Set<Tag> tags) {
-        List<Tag> tagsDB = tagRepository.findAll();
+    private Set<Tag> switchExistTags(Set<Tag> newTags, Long projectId) {
+        Project project = projectRepository.findById(projectId);
+        Set<Tag> currentProjectTags = project.getTags();
         Set<Tag> result = new HashSet<>();
-        for (Tag tag : tags) {
-            boolean flag = false;
-            for (Tag tagDB : tagsDB) {
-                if (tag.getTagName().equals(tagDB.getTagName())) {
-                    flag = true;
-                    result.add(tagDB);
+        for (Tag newTag: newTags) {
+            boolean wasNewTagFound = false;
+            for (Tag currentProjectTag: currentProjectTags) {
+                if (newTag.getTagName().equals(currentProjectTag.getTagName())) {
+                    result.add(currentProjectTag);
+                    wasNewTagFound = true;
                     break;
                 }
             }
-            if (!flag) {
-                result.add(tag);
+            if (!wasNewTagFound) {
+                result.add(newTag);
             }
         }
-        return result.size() == 0 ? tags : result;
+        return result;
     }
 }
