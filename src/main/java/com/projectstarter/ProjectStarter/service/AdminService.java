@@ -1,15 +1,9 @@
 package com.projectstarter.ProjectStarter.service;
 
-import com.projectstarter.ProjectStarter.model.Comments;
-import com.projectstarter.ProjectStarter.model.CreatorRequest;
-import com.projectstarter.ProjectStarter.model.Project;
-import com.projectstarter.ProjectStarter.model.User;
+import com.projectstarter.ProjectStarter.model.*;
 import com.projectstarter.ProjectStarter.model.enums.BlockStatus;
 import com.projectstarter.ProjectStarter.model.enums.Role;
-import com.projectstarter.ProjectStarter.repository.CommentRepository;
-import com.projectstarter.ProjectStarter.repository.CreatorRepository;
-import com.projectstarter.ProjectStarter.repository.ProjectRepository;
-import com.projectstarter.ProjectStarter.repository.UserRepository;
+import com.projectstarter.ProjectStarter.repository.*;
 import com.projectstarter.ProjectStarter.service.dto.admin.BlockDto;
 import com.projectstarter.ProjectStarter.service.dto.admin.DeleteDto;
 import com.projectstarter.ProjectStarter.service.dto.admin.ResponseScanDto;
@@ -35,6 +29,7 @@ public class AdminService {
     private final CommentRepository commentRepository;
     private final UserListTransformer userListTransformer;
     private final CreatorRepository creatorRepository;
+    private final RatingRepository ratingRepository;
 
     @Transactional()
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -97,6 +92,20 @@ public class AdminService {
                 for (Project project:
                         projectList) {
                     projectRepository.delete(project);
+                }
+            }
+            if (!ratings) {
+                List<Rating> ratingList = ratingRepository.findAllByUserId(userId);
+                for (Rating rating:
+                        ratingList) {
+                    rating.setUser(null);
+                    ratingRepository.save(rating);
+                }
+            } else {
+                List<Rating> ratingList = ratingRepository.findAllByUserId(userId);
+                for (Rating rating:
+                        ratingList) {
+                    ratingRepository.delete(rating);
                 }
             }
 
