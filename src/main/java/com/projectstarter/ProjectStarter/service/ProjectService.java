@@ -305,7 +305,12 @@ public class ProjectService {
     }
 
     public ResponseRatingDto addRating(RatingRequestDto ratingRequestDto) {
-        Rating rating = ratingTransformer.makeObject(ratingRequestDto);
+        Rating rating = ratingRepository.findByUserIdAndProjectId(ratingRequestDto.getUserId(), ratingRequestDto.getProjectId());
+        if (rating == null) {
+            rating = ratingTransformer.makeObject(ratingRequestDto);
+        } else {
+            rating.setScore(ratingRequestDto.getScore());
+        }
         ratingRepository.save(rating);
         Project project = projectRepository.findById(ratingRequestDto.getProjectId());
         double sum = 0;
