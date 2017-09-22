@@ -122,7 +122,8 @@ public class ProjectService {
     public ProjectDto findProject(Long projectId) {
         Project project = projectRepository.findById(projectId);
         ProjectDto projectDto = projectTransformer.makeDto(project);
-        projectDto.setAmountOfDonates(ratingRepository.countAllByProjectId(project.getId()));
+        projectDto.setAmountOfRatings(ratingRepository.countAllByProjectId(project.getId()));
+        projectDto.setAmountOfDonates(donateRepository.countAllByProjectId(project.getId()));
         return projectDto;
     }
 

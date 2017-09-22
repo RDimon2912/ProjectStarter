@@ -13,4 +13,5 @@ public interface DonateRepository extends JpaRepository<Donate, Long> {
     @Query(value = "SELECT * FROM donates ORDER BY amount DESC LIMIT :limit", nativeQuery = true)
     List<Donate> findAllOrderByAmountDescLimitN(@Param("limit") int limit);
     int countAllByUserId(long userId);
+    int countAllByProjectId(long projectId);
 }

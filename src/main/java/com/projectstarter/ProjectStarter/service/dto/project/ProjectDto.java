@@ -26,5 +26,6 @@ public class ProjectDto {
     private String projectStatus;
     private String imageUrl;
     private int amountOfDonates;
+    private int amountOfRatings;
     private Set<String> tags;
 }
