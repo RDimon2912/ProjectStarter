@@ -13,6 +13,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "projects")
@@ -88,4 +89,10 @@ public class Project {
     @OneToMany(mappedBy = "project",
             cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Donate> donateList;
+
+    @ManyToMany(cascade = {CascadeType.MERGE,CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    @JoinTable(name = "projects_tags", joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    @IndexedEmbedded
+    private Set<Tag> tags;
 }
