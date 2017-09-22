@@ -86,14 +86,13 @@ public class ProjectTransformer {
     }
 
     private Set<Tag> switchExistTags(Set<Tag> newTags, Long projectId) {
-        Project project = projectRepository.findById(projectId);
-        Set<Tag> currentProjectTags = project.getTags();
+        List<Tag> dataBaseTags = tagRepository.findAll();
         Set<Tag> result = new HashSet<>();
         for (Tag newTag: newTags) {
             boolean wasNewTagFound = false;
-            for (Tag currentProjectTag: currentProjectTags) {
-                if (newTag.getTagName().equals(currentProjectTag.getTagName())) {
-                    result.add(currentProjectTag);
+            for (Tag dataBaseTag: dataBaseTags) {
+                if (newTag.getTagName().equals(dataBaseTag.getTagName())) {
+                    result.add(dataBaseTag);
                     wasNewTagFound = true;
                     break;
                 }
@@ -103,5 +102,24 @@ public class ProjectTransformer {
             }
         }
         return result;
+    }
+
+    private Set<Tag> switchExistTags(Set<Tag> tags) {
+        List<Tag> tagsDB = tagRepository.findAll();
+        Set<Tag> result = new HashSet<>();
+        for (Tag tag : tags) {
+            boolean flag = false;
+            for (Tag tagDB : tagsDB) {
+                if (tag.getTagName().equals(tagDB.getTagName())) {
+                    flag = true;
+                    result.add(tagDB);
+                    break;
+                }
+            }
+            if (!flag) {
+                result.add(tag);
+            }
+        }
+        return result.size() == 0 ? tags : result;
     }
 }
