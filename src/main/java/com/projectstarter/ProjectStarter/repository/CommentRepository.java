@@ -9,4 +9,5 @@ public interface CommentRepository extends JpaRepository<Comments, Long> {
     List<Comments> findAllByUserId(Long userId);
     List<Comments> findAllByProjectIdOrderByDateDesc(Long projectId);
     List<Comments> findAllByProjectId(Long projectId);
+    int countAllByUserId(long userId);
 }

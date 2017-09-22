@@ -15,4 +15,5 @@ public interface DonateRepository extends JpaRepository<Donate, Long> {
 
 
     int countAllByProjectId(long projectId);
+    int countAllByUserId(long userId);
 }
