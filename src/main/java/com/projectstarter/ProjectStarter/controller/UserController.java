@@ -2,6 +2,7 @@ package com.projectstarter.ProjectStarter.controller;
 
 import com.projectstarter.ProjectStarter.service.AuthenticationService;
 import com.projectstarter.ProjectStarter.service.UserService;
+import com.projectstarter.ProjectStarter.service.dto.achievements.AchievementDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectDto;
 import com.projectstarter.ProjectStarter.service.dto.CreatorDto;
 import com.projectstarter.ProjectStarter.service.dto.user.BiographyDto;
@@ -40,6 +41,13 @@ public class UserController {
     @ResponseStatus(value = HttpStatus.OK)
     public List<ProjectDto> userProjects(@RequestParam("user_id") Long userId) {
         return userService.findAllUserProjects(userId);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_WAIT_CONFIRM', 'ROLE_CONFIRMED_USER', 'ROLE_ADMIN')")
+    @GetMapping(value = "/user_achievements")
+    @ResponseStatus(value = HttpStatus.OK)
+    public List<AchievementDto> userAchievements(@RequestParam("user_id") Long userId) {
+        return userService.findAllUserAchievements(userId);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_WAIT_CONFIRM', 'ROLE_CONFIRMED_USER', 'ROLE_ADMIN')")
