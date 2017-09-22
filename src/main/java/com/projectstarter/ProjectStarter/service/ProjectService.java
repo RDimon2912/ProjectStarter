@@ -2,6 +2,7 @@ package com.projectstarter.ProjectStarter.service;
 
 import com.projectstarter.ProjectStarter.model.*;
 import com.projectstarter.ProjectStarter.model.DonateSystem;
+import com.projectstarter.ProjectStarter.model.enums.AchievementName;
 import com.projectstarter.ProjectStarter.model.enums.Role;
 import com.projectstarter.ProjectStarter.repository.*;
 import com.projectstarter.ProjectStarter.repository.fulltextsearch.FullTextReposiroty;
@@ -29,6 +30,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,6 +62,8 @@ public class ProjectService {
     private final DonateSystemRepository donateSystemRepository;
     private final DonateRepository donateRepository;
     private final RatingRepository ratingRepository;
+    private final UserRepository userRepository;
+    private final AchievementRepository achievementRepository;
 
     private final ProjectTransformer projectTransformer;
     private final NewsTransformer newsTransformer;
@@ -100,15 +104,25 @@ public class ProjectService {
         project.setImageUrl(environment.getProperty(DEAULT_IMAGE_PROPERTY));
 
         project = projectRepository.saveAndFlush(project);
-
+        checkProjectAchievements(user.getId());
         return new ProjectCreateResponseDto(project.getId());
+    }
+
+    private void checkProjectAchievements(Long userId) {
+        int amountOfProjects = commentRepository.countAllByUserId(userId);
+        if (amountOfProjects == 1) {
+            createAchievement(userId, AchievementName.FIRST_PROJECT);
+        }
+        if (amountOfProjects == 10) {
+            createAchievement(userId, AchievementName.TEN_PROJECTS);
+        }
     }
 
     @Transactional(readOnly = true)
     public ProjectDto findProject(Long projectId) {
         Project project = projectRepository.findById(projectId);
         ProjectDto projectDto = projectTransformer.makeDto(project);
-        projectDto.setAmountOfDonates(donateRepository.countAllByProjectId(projectId));
+        projectDto.setAmountOfDonates(ratingRepository.countAllByProjectId(project.getId()));
         return projectDto;
     }
 
@@ -303,7 +317,18 @@ public class ProjectService {
         commentsList.add(comment);
         project.setCommentsList(commentsList);
         projectRepository.save(project);
+        checkCommentAchievements(commentRequestDto.userId);
         return true;
+    }
+
+    private void checkCommentAchievements(long userId) {
+        int amountOfComments = commentRepository.countAllByUserId(userId);
+        if (amountOfComments == 1) {
+            createAchievement(userId, AchievementName.FIRST_COMMENT);
+        }
+        if (amountOfComments == 10) {
+            createAchievement(userId, AchievementName.TEN_COMMENTS);
+        }
     }
 
     public ResponseRatingDto addRating(RatingRequestDto ratingRequestDto) {
@@ -357,7 +382,25 @@ public class ProjectService {
         project.setCurrentAmount(project.getCurrentAmount() + donate.getAmount());
         checkProjectStatus(project);
         projectRepository.save(project);
+        checkDonateAchievements(paymentRequestDto.getUserId());
         return true;
+    }
+    private void checkDonateAchievements(long userId) {
+        int amountOfDonates = donateRepository.countAllByUserId(userId);
+        if (amountOfDonates == 1) {
+            createAchievement(userId, AchievementName.FIRST_DONATION);
+        }
+        if (amountOfDonates == 10) {
+            createAchievement(userId, AchievementName.TEN_DONATIONS);
+        }
+    }
+
+    private void createAchievement(long userId, AchievementName achievementName) {
+        Achievement achievement = new Achievement();
+        achievement.setAchievementName(achievementName);
+        achievement.setUser(userRepository.findById(userId));
+        achievement.setDate(new Timestamp(System.currentTimeMillis()));
+        achievementRepository.save(achievement);
     }
 
     public List<ProjectDto> search(String requestString, int offset) {

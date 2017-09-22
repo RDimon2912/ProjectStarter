@@ -1,20 +1,14 @@
 package com.projectstarter.ProjectStarter.service;
 
-import com.projectstarter.ProjectStarter.model.Biography;
-import com.projectstarter.ProjectStarter.model.Project;
-import com.projectstarter.ProjectStarter.model.Subscription;
-import com.projectstarter.ProjectStarter.model.CreatorRequest;
-import com.projectstarter.ProjectStarter.model.User;
+import com.projectstarter.ProjectStarter.model.*;
 import com.projectstarter.ProjectStarter.model.enums.BlockStatus;
 import com.projectstarter.ProjectStarter.model.enums.Role;
-import com.projectstarter.ProjectStarter.repository.BiographyRepository;
-import com.projectstarter.ProjectStarter.repository.ProjectRepository;
-import com.projectstarter.ProjectStarter.repository.SubscribeRepository;
-import com.projectstarter.ProjectStarter.repository.CreatorRepository;
-import com.projectstarter.ProjectStarter.repository.UserRepository;
+import com.projectstarter.ProjectStarter.repository.*;
+import com.projectstarter.ProjectStarter.service.dto.achievements.AchievementDto;
 import com.projectstarter.ProjectStarter.service.dto.admin.UserListDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectDto;
 import com.projectstarter.ProjectStarter.service.dto.user.BiographyDto;
+import com.projectstarter.ProjectStarter.service.transformer.AchievementTransformer;
 import com.projectstarter.ProjectStarter.service.transformer.BiographyTransformer;
 import com.projectstarter.ProjectStarter.service.transformer.ProjectTransformer;
 import com.projectstarter.ProjectStarter.service.transformer.UserListTransformer;
@@ -35,7 +29,8 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BiographyRepository biographyRepository;
-
+    private final AchievementRepository achievementRepository;
+    private final AchievementTransformer achievementTransformer;
     private final UserListTransformer userListTransformer;
     private final BiographyTransformer biographyTransformer;
     private final CreatorRepository creatorRepository;
@@ -154,5 +149,16 @@ public class UserService {
 
     public BiographyDto findUserBiography(Long userId) {
         return biographyTransformer.makeDto(biographyRepository.findByUserId(userId));
+    }
+
+    @Transactional(readOnly = true)
+    public List<AchievementDto> findAllUserAchievements(Long userId) {
+        List<Achievement> achievements = achievementRepository.findAllByUserId(userId);
+        List<AchievementDto> achievementDtoList = new ArrayList<>();
+        for (Achievement achievement:
+             achievements) {
+            achievementDtoList.add(achievementTransformer.makeDto(achievement));
+        }
+        return achievementDtoList;
     }
 }

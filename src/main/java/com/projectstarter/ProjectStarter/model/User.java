@@ -62,8 +62,7 @@ public class User {
             cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Subscription> subscriptionList;
 
-    @OneToMany(mappedBy = "user",
-            cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Donate> donateList;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
