@@ -87,11 +87,11 @@ public class ProjectTransformer {
 
     private void setProjectTags(Project project, ProjectDto projectDto) {
         Set<Tag> tags = getTagsSet(projectDto.getTags());
-        tags = switchExistTags(tags);
+        tags = switchExistTags(tags, projectDto.getId());
         project.setTags(tags);
     }
 
-    private Set<Tag> switchExistTags(Set<Tag> newTags) {
+    private Set<Tag> switchExistTags(Set<Tag> newTags, Long projectId) {
         List<Tag> dataBaseTags = tagRepository.findAll();
         Set<Tag> result = new HashSet<>();
         for (Tag newTag: newTags) {

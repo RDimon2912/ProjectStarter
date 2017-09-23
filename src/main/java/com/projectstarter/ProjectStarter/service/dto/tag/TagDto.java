@@ -1,4 +1,4 @@
-package com.projectstarter.ProjectStarter.service.dto;
+package com.projectstarter.ProjectStarter.service.dto.tag;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -10,5 +10,6 @@ import org.springframework.stereotype.Component;
 @EqualsAndHashCode
 @Component
 public class TagDto {
-    private String value;
+    private String tagName;
+    private int projectCount;
 }
