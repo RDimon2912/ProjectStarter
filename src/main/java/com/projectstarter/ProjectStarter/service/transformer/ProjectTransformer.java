@@ -81,19 +81,18 @@ public class ProjectTransformer {
 
     private void setProjectTags(Project project, ProjectDto projectDto) {
         Set<Tag> tags = getTagsSet(projectDto.getTags());
-        tags = switchExistTags(tags, projectDto.getId());
+        tags = switchExistTags(tags);
         project.setTags(tags);
     }
 
-    private Set<Tag> switchExistTags(Set<Tag> newTags, Long projectId) {
-        Project project = projectRepository.findById(projectId);
-        Set<Tag> currentProjectTags = project.getTags();
+    private Set<Tag> switchExistTags(Set<Tag> newTags) {
+        List<Tag> dataBaseTags = tagRepository.findAll();
         Set<Tag> result = new HashSet<>();
         for (Tag newTag: newTags) {
             boolean wasNewTagFound = false;
-            for (Tag currentProjectTag: currentProjectTags) {
-                if (newTag.getTagName().equals(currentProjectTag.getTagName())) {
-                    result.add(currentProjectTag);
+            for (Tag dataBaseTag: dataBaseTags) {
+                if (newTag.getTagName().equals(dataBaseTag.getTagName())) {
+                    result.add(dataBaseTag);
                     wasNewTagFound = true;
                     break;
                 }
