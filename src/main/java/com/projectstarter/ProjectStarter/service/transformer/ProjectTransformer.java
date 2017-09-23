@@ -17,7 +17,6 @@ import java.util.*;
 @RequiredArgsConstructor
 public class ProjectTransformer {
     private final TagRepository tagRepository;
-    private final ProjectRepository projectRepository;
 
     public ProjectDto makeDto(final Project project) {
         ProjectDto projectDto = new ProjectDto();
@@ -29,6 +28,13 @@ public class ProjectTransformer {
         projectDto.setTargetAmount(project.getTargetAmount());
         projectDto.setCurrentAmount(project.getCurrentAmount());
         projectDto.setRating(project.getRating());
+
+        String status = project.getStatus().toString();
+        status = status.replace('_', ' ');
+        status = status.toLowerCase();
+        status = status.substring(0, 1).toUpperCase() + status.substring(1);
+
+        projectDto.setStatus(status);
         projectDto.setStartDate(project.getStartDate());
         projectDto.setEndDate(project.getEndDate());
         projectDto.setProjectStatus(project.getStatus().name());

@@ -21,6 +21,7 @@ public class ProjectDto {
     private int targetAmount;
     private int currentAmount;
     private double rating;
+    private String status;
     private Timestamp startDate;
     private Timestamp endDate;
     private String projectStatus;
