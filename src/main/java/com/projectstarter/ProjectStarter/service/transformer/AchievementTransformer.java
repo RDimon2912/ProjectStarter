@@ -15,7 +15,18 @@ public class AchievementTransformer {
         achievementName = achievementName.substring(0, 1).toUpperCase() + achievementName.substring(1);
         achievementDto.setAchievementName(achievementName);
         achievementDto.setUserId(achievement.getUser().getId());
-        achievement.setId(achievement.getId());
+        achievementDto.setId(achievement.getId());
+        return achievementDto;
+    }
+
+    public AchievementDto simpleDto(Achievement achievement) {
+        AchievementDto achievementDto = new AchievementDto();
+        achievementDto.setDate(achievement.getDate());
+        String achievementName = achievement.getAchievementName().toString();
+        achievementName = achievementName.replace('_', ' ');
+        achievementName = achievementName.toLowerCase();
+        achievementName = achievementName.substring(0, 1).toUpperCase() + achievementName.substring(1);
+        achievementDto.setAchievementName(achievementName);
         return achievementDto;
     }
 }
