@@ -201,20 +201,35 @@ public class AdminService {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                sendEmailToUser(user);
+                String subject = "Your request was confirmed";
+                String text = "Hi " + user.getBiography().getName() + ",\n\n" +
+                        "Your request to become a creator was accepted. Now you can create new projects! Congrats!!!\n" +
+                        "Kind regards,\nTeam ProjectStarter";
+                sendEmailToUser(user, subject, text);
             }
         }).start();
     }
 
-    private void sendEmailToUser(User user) {
+    private void sendDismissEmail(User user) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String subject = "Your request was not confirmed";
+                String text = "Hi " + user.getBiography().getName() + ",\n\n" +
+                        "Your request to become a creator was dismissed. You can send your request later.\n" +
+                        "Kind regards,\nTeam ProjectStarter";
+                sendEmailToUser(user, subject, text);
+            }
+        }).start();
+    }
+
+    private void sendEmailToUser(User user, String subject, String text) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message);
             helper.setTo(user.getEmail());
-            helper.setSubject("Your request was confirmed");
-            helper.setText("Hi " + user.getBiography().getName() + ",\n\n" +
-                    "Your request to become a creator was accepted. Now you can create new projects! Congrats!!!\n" +
-                    "Kind regards,\nTeam ProjectStarter");
+            helper.setSubject(subject);
+            helper.setText(text);
             mailSender.send(message);
         } catch (MessagingException e) {
             e.printStackTrace();
@@ -229,6 +244,7 @@ public class AdminService {
         userRepository.save(user);
         CreatorRequest creatorRequest = creatorRepository.findByUser(user);
         creatorRepository.delete(creatorRequest);
+        sendDismissEmail(user);
         return true;
     }
 }
