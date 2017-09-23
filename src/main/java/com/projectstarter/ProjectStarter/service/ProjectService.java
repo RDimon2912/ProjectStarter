@@ -54,6 +54,7 @@ public class ProjectService {
     private final Environment environment;
 
     private final FullTextReposiroty fullTextReposiroty;
+    private final TagRepository tagRepository;
     private final ProjectRepository projectRepository;
     private final NewsRepository newsRepository;
     private final GoalRepository goalRepository;
@@ -174,8 +175,18 @@ public class ProjectService {
 
         Project project = projectTransformer.makeObject(projectDto);
         project = projectRepository.saveAndFlush(project);
+        clearUnusedTags();
 
         return projectTransformer.makeDto(project);
+    }
+
+    private void clearUnusedTags() {
+        List<Tag> tags = tagRepository.findAll();
+        for(Tag tag : tags) {
+            if (tag.getProjects() == null || tag.getProjects().size() == 0) {
+                tagRepository.delete(tag);
+            }
+        }
     }
 
     public NewsDto createNews(NewsDto newsDto, HttpServletRequest request) {
