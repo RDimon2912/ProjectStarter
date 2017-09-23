@@ -7,12 +7,10 @@ import com.projectstarter.ProjectStarter.model.enums.Role;
 import com.projectstarter.ProjectStarter.repository.*;
 import com.projectstarter.ProjectStarter.service.dto.achievements.AchievementDto;
 import com.projectstarter.ProjectStarter.service.dto.admin.UserListDto;
+import com.projectstarter.ProjectStarter.service.dto.news.NewsDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectDto;
 import com.projectstarter.ProjectStarter.service.dto.user.BiographyDto;
-import com.projectstarter.ProjectStarter.service.transformer.AchievementTransformer;
-import com.projectstarter.ProjectStarter.service.transformer.BiographyTransformer;
-import com.projectstarter.ProjectStarter.service.transformer.ProjectTransformer;
-import com.projectstarter.ProjectStarter.service.transformer.UserListTransformer;
+import com.projectstarter.ProjectStarter.service.transformer.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,15 +29,16 @@ public class UserService {
     private final UserRepository userRepository;
     private final BiographyRepository biographyRepository;
     private final AchievementRepository achievementRepository;
+    private final CreatorRepository creatorRepository;
+    private final ProjectRepository projectRepository;
+    private final SubscribeRepository subscribeRepository;
+    private final NewsRepository newsRepository;
+
     private final AchievementTransformer achievementTransformer;
     private final UserListTransformer userListTransformer;
     private final BiographyTransformer biographyTransformer;
-    private final CreatorRepository creatorRepository;
-
-    private final ProjectRepository projectRepository;
     private final ProjectTransformer projectTransformer;
-
-    private final SubscribeRepository subscribeRepository;
+    private final NewsTransformer newsTransformer;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -121,6 +120,18 @@ public class UserService {
             projectDtoList.add(projectTransformer.makeDto(project));
         }
         return projectDtoList;
+    }
+
+    @Transactional(readOnly = true)
+    public List<NewsDto> findAllUserSubscribedProjectsNews(Long userId) {
+        List<News> newsList = newsRepository.findAllUserSubscribedProjectsNews(userId);
+        List<NewsDto> newsDtoList = new ArrayList<>();
+        for (News news: newsList) {
+            NewsDto newsDto = newsTransformer.makeDto(news);
+            newsDto.setProjectName(projectRepository.findById(news.getProject().getId()).getTitle());
+            newsDtoList.add(newsDto);
+        }
+        return newsDtoList;
     }
 
     @Transactional(readOnly = true)

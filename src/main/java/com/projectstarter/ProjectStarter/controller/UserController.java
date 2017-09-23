@@ -3,6 +3,7 @@ package com.projectstarter.ProjectStarter.controller;
 import com.projectstarter.ProjectStarter.service.AuthenticationService;
 import com.projectstarter.ProjectStarter.service.UserService;
 import com.projectstarter.ProjectStarter.service.dto.achievements.AchievementDto;
+import com.projectstarter.ProjectStarter.service.dto.news.NewsDto;
 import com.projectstarter.ProjectStarter.service.dto.project.ProjectDto;
 import com.projectstarter.ProjectStarter.service.dto.CreatorDto;
 import com.projectstarter.ProjectStarter.service.dto.user.BiographyDto;
@@ -37,21 +38,28 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_WAIT_CONFIRM', 'ROLE_CONFIRMED_USER', 'ROLE_ADMIN')")
-    @GetMapping(value = "/user_projects")
+    @GetMapping(value = "/user-projects")
     @ResponseStatus(value = HttpStatus.OK)
     public List<ProjectDto> userProjects(@RequestParam("user_id") Long userId) {
         return userService.findAllUserProjects(userId);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_WAIT_CONFIRM', 'ROLE_CONFIRMED_USER', 'ROLE_ADMIN')")
-    @GetMapping(value = "/user_achievements")
+    @GetMapping(value = "/user-achievements")
     @ResponseStatus(value = HttpStatus.OK)
     public List<AchievementDto> userAchievements(@RequestParam("user_id") Long userId) {
         return userService.findAllUserAchievements(userId);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_WAIT_CONFIRM', 'ROLE_CONFIRMED_USER', 'ROLE_ADMIN')")
-    @GetMapping(value = "/subscribed_projects")
+    @GetMapping(value = "/user-project-news")
+    @ResponseStatus(value = HttpStatus.OK)
+    public List<NewsDto> findAllUserSubscribedProjectsNews(@RequestParam("user_id") Long userId) {
+        return userService.findAllUserSubscribedProjectsNews(userId);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_WAIT_CONFIRM', 'ROLE_CONFIRMED_USER', 'ROLE_ADMIN')")
+    @GetMapping(value = "/subscribed-projects")
     @ResponseStatus(value = HttpStatus.OK)
     public List<ProjectDto> subscribedProjects(@RequestParam("user_id") Long userId) {
         return userService.findAllSubscribedProjectsByUserId(userId);
