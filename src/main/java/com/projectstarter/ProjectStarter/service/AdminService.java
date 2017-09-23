@@ -11,10 +11,14 @@ import com.projectstarter.ProjectStarter.service.dto.admin.UserListDto;
 import com.projectstarter.ProjectStarter.service.dto.user.SortByDto;
 import com.projectstarter.ProjectStarter.service.transformer.UserListTransformer;
 import lombok.RequiredArgsConstructor;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -30,6 +34,7 @@ public class AdminService {
     private final UserListTransformer userListTransformer;
     private final CreatorRepository creatorRepository;
     private final RatingRepository ratingRepository;
+    private final JavaMailSender mailSender;
 
     @Transactional()
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -188,7 +193,32 @@ public class AdminService {
         userRepository.save(user);
         CreatorRequest creatorRequest = creatorRepository.findByUser(user);
         creatorRepository.delete(creatorRequest);
+        sendConfirmEmail(user);
         return true;
+    }
+
+    private void sendConfirmEmail(User user) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                sendEmailToUser(user);
+            }
+        }).start();
+    }
+
+    private void sendEmailToUser(User user) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message);
+            helper.setTo(user.getEmail());
+            helper.setSubject("Your request was confirmed");
+            helper.setText("Hi " + user.getBiography().getName() + ",\n\n" +
+                    "Your request to become a creator was accepted. Now you can create new projects! Congrats!!!\n" +
+                    "Kind regards,\nTeam ProjectStarter");
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
     }
 
     @Transactional()
