@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 public class NewsDto {
     private Long id;
     private Long projectId;
+    private String projectName;
     private String title;
     private String newsText;
     private Timestamp date;
