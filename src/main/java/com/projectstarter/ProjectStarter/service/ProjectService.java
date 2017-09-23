@@ -148,7 +148,7 @@ public class ProjectService {
     }
 
     public List<CommentsDto> findCommentsByProjectId(Long projectId) {
-        List<Comments> commentsList = commentRepository.findAllByProjectIdOrderByDateDesc(projectId);
+        List<Comments> commentsList = commentRepository.findAllByProjectIdOrderByDate(projectId);
         List<CommentsDto> commentsDtoList = new ArrayList<>();
         for (Comments comment: commentsList) {
             commentsDtoList.add(commentTransformer.makeDto(comment));

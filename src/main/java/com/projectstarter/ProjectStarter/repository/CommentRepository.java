@@ -7,7 +7,7 @@ import java.util.List;
 public interface CommentRepository extends JpaRepository<Comments, Long> {
     Comments findById(Long id);
     List<Comments> findAllByUserId(Long userId);
-    List<Comments> findAllByProjectIdOrderByDateDesc(Long projectId);
+    List<Comments> findAllByProjectIdOrderByDate(Long projectId);
     List<Comments> findAllByProjectId(Long projectId);
     int countAllByUserId(long userId);
 }
