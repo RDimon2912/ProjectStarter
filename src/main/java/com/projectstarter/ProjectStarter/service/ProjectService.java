@@ -377,13 +377,15 @@ public class ProjectService {
     }
 
     public boolean pay(PaymentRequestDto paymentRequestDto) {
-        Donate donate = donateTransformer.makeObject(paymentRequestDto);
-        donateRepository.save(donate);
         Project project = projectRepository.findById(paymentRequestDto.getProjectId());
-        project.setCurrentAmount(project.getCurrentAmount() + donate.getAmount());
-        checkProjectStatus(project);
-        projectRepository.save(project);
-        checkDonateAchievements(paymentRequestDto.getUserId());
+        if (project.getStatus() == ProjectStatus.FINANCED || project.getStatus() == ProjectStatus.IN_PROGRESS) {
+            Donate donate = donateTransformer.makeObject(paymentRequestDto);
+            donateRepository.save(donate);
+            project.setCurrentAmount(project.getCurrentAmount() + donate.getAmount());
+            checkProjectStatus(project);
+            projectRepository.save(project);
+            checkDonateAchievements(paymentRequestDto.getUserId());
+        }
         return true;
     }
     private void checkDonateAchievements(long userId) {
