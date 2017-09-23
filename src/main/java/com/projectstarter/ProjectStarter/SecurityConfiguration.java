@@ -33,7 +33,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private static final String[] allowedUrlsForGet = new String[]{ "/project/info", "/project/news",
             "/project/comments", "/project/rewards", "/project/project_goals", "/project/last_created",
             "/project/successfully_financed", "/donate/the-biggest", "/project/search",
-            "/donate/user-biography", "user/user_achievements"};
+            "/donate/user-biography", "/user/user_achievements", "/tag/all"};
 
     private final JwtAuthenticationProvider jwtAuthenticationProvider;
     private final UserDetailsService userDetailsService;
