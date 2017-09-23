@@ -1,6 +1,7 @@
 package com.projectstarter.ProjectStarter.service;
 
 import com.projectstarter.ProjectStarter.model.*;
+import com.projectstarter.ProjectStarter.model.enums.AchievementName;
 import com.projectstarter.ProjectStarter.model.enums.BlockStatus;
 import com.projectstarter.ProjectStarter.model.enums.Role;
 import com.projectstarter.ProjectStarter.repository.*;
@@ -154,11 +155,36 @@ public class UserService {
     @Transactional(readOnly = true)
     public List<AchievementDto> findAllUserAchievements(Long userId) {
         List<Achievement> achievements = achievementRepository.findAllByUserId(userId);
+        List<Achievement> otherAchievements = new ArrayList<>();
+        List<AchievementName> achievementNames = new ArrayList<>();
+        for (Achievement achievement: achievements) {
+            achievementNames.add(achievement.getAchievementName());
+        }
+        for (AchievementName achievementName : AchievementName.values()) {
+            if (!achievementNames.contains(achievementName)) {
+                otherAchievements.add(createAchievement(achievementName));
+            }
+        }
         List<AchievementDto> achievementDtoList = new ArrayList<>();
         for (Achievement achievement:
              achievements) {
-            achievementDtoList.add(achievementTransformer.makeDto(achievement));
+            AchievementDto achievementDto = achievementTransformer.makeDto(achievement);
+            achievementDto.setAchieved(true);
+            achievementDtoList.add(achievementDto);
+        }
+        for (Achievement achievement:
+                otherAchievements) {
+            AchievementDto achievementDto = achievementTransformer.simpleDto(achievement);
+            achievementDto.setAchieved(false);
+            achievementDtoList.add(achievementDto);
         }
         return achievementDtoList;
+    }
+
+    private Achievement createAchievement(AchievementName achievementName) {
+        Achievement achievement = new Achievement();
+        achievement.setDate(null);
+        achievement.setAchievementName(achievementName);
+        return achievement;
     }
 }
