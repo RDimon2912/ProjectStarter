@@ -49,6 +49,9 @@ public class Project {
     @Column(name = "current_amount")
     private int currentAmount;
 
+    @Column(name = "donate_min")
+    private int donateMin;
+
     @Column(name = "rating")
     private double rating;
 

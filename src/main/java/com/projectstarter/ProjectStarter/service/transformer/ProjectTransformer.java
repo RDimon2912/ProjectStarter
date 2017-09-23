@@ -21,6 +21,7 @@ public class ProjectTransformer {
     public ProjectDto makeDto(final Project project) {
         ProjectDto projectDto = new ProjectDto();
 
+        projectDto.setDonateMin(project.getDonateMin());
         projectDto.setId(project.getId());
         projectDto.setUserId(project.getUser().getId());
         projectDto.setTitle(project.getTitle());
@@ -61,6 +62,7 @@ public class ProjectTransformer {
         user.setId(projectDto.getUserId());
         project.setUser(user);
 
+        project.setDonateMin(projectDto.getDonateMin());
         project.setTitle(projectDto.getTitle());
         project.setDescription(projectDto.getDescription());
         project.setTargetAmount(projectDto.getTargetAmount());

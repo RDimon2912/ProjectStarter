@@ -20,6 +20,7 @@ public class ProjectDto {
     private String description;
     private int targetAmount;
     private int currentAmount;
+    private int donateMin;
     private double rating;
     private String status;
     private Timestamp startDate;
