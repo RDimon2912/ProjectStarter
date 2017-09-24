@@ -16,6 +16,7 @@ public class AuthUserTransformer {
         authUserDto.setId(user.getId());
         authUserDto.setUsername(user.getEmail());
         authUserDto.setRole(user.getRole().name());
+        authUserDto.setStatus(user.getBlockStatus().toString());
 
         return authUserDto;
     }

@@ -154,7 +154,7 @@ public class AuthenticationService {
         userService.confirm(userService.findByEmail(email));
         return new RegistrationResponseDto(email);
     }
-    @Transactional()
+
     public void checkUser(ChangeUserDto changeUserDto) {
 
         try {

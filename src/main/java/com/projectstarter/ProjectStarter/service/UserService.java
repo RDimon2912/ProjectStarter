@@ -42,7 +42,6 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
 
-    @Transactional()
     public void save(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         if (user.getRegistrationDate() == null) {
@@ -54,7 +53,6 @@ public class UserService {
         biographyRepository.save(biography);
     }
 
-    @Transactional()
     public void confirm(User user) {
         user.setConfirmed(true);
         userRepository.save(user);
@@ -91,7 +89,6 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public BiographyDto findUserInfo(long id) {
         User user = userRepository.findById(id);
         Biography biography = user.getBiography();
@@ -146,8 +143,6 @@ public class UserService {
         return projectDtoList;
     }
 
-    @Transactional()
-    @PreAuthorize("hasRole('ROLE_USER')")
     public boolean setWaitingRole(String email, String image) {
         User user = userRepository.findByEmail(email);
         user.setRole(Role.ROLE_WAIT_CONFIRM);

@@ -36,8 +36,6 @@ public class AdminService {
     private final RatingRepository ratingRepository;
     private final JavaMailSender mailSender;
 
-    @Transactional()
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public boolean block(BlockDto blockDto) {
         for (String email:
                 blockDto.emails) {
@@ -48,8 +46,6 @@ public class AdminService {
         return true;
     }
 
-    @Transactional()
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public boolean unblock(BlockDto unblockDto) {
         for (String email:
                 unblockDto.emails) {
@@ -60,8 +56,6 @@ public class AdminService {
         return true;
     }
 
-    @Transactional()
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public boolean delete(DeleteDto deleteDto) {
         boolean comments = deleteDto.checkboxSettings[0];
         boolean projects = deleteDto.checkboxSettings[1];
@@ -119,8 +113,6 @@ public class AdminService {
         return true;
     }
 
-    @Transactional()
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<UserListDto> sortByRole(Role role) {
         List<UserListDto> userListDto = new ArrayList<>();
         List<User> userList;
@@ -132,8 +124,6 @@ public class AdminService {
         return userListDto;
     }
 
-    @Transactional()
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<UserListDto> sortBy(String by, Role role) {
         List<UserListDto> userListDto = new ArrayList<>();
         List<User> userList = null;
@@ -177,7 +167,6 @@ public class AdminService {
     }
 
     @Transactional(readOnly = true)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseScanDto getPassportScan(String email) {
         CreatorRequest creatorRequest = creatorRepository.findByUser(userRepository.findByEmail(email));
         ResponseScanDto responseScanDto = new ResponseScanDto();
@@ -185,8 +174,6 @@ public class AdminService {
         return responseScanDto;
     }
 
-    @Transactional()
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public boolean confirm(String email) {
         User user = userRepository.findByEmail(email);
         user.setRole(Role.ROLE_CONFIRMED_USER);
@@ -236,8 +223,6 @@ public class AdminService {
         }
     }
 
-    @Transactional()
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public boolean dismiss(String email) {
         User user = userRepository.findByEmail(email);
         user.setRole(Role.ROLE_USER);
