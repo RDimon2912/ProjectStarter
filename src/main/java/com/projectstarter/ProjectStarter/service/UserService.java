@@ -171,18 +171,21 @@ public class UserService {
                 otherAchievements.add(createAchievement(achievementName));
             }
         }
+        System.out.println(userId);
         List<AchievementDto> achievementDtoList = new ArrayList<>();
         for (Achievement achievement:
              achievements) {
             AchievementDto achievementDto = achievementTransformer.makeDto(achievement);
             achievementDto.setAchieved(true);
             achievementDtoList.add(achievementDto);
+            System.out.println(achievementDto.getAchievementName() + "  :  " + achievementDto.isAchieved());
         }
         for (Achievement achievement:
                 otherAchievements) {
             AchievementDto achievementDto = achievementTransformer.simpleDto(achievement);
             achievementDto.setAchieved(false);
             achievementDtoList.add(achievementDto);
+            System.out.println(achievementDto.getAchievementName() + "  :  " + achievementDto.isAchieved());
         }
         return achievementDtoList;
     }

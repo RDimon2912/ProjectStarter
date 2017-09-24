@@ -96,7 +96,7 @@ public class ProjectService {
     }
 
     private void checkProjectAchievements(Long userId) {
-        int amountOfProjects = commentRepository.countAllByUserId(userId);
+        int amountOfProjects = projectRepository.countAllByUserId(userId);
         if (amountOfProjects == 1) {
             createAchievement(userId, AchievementName.FIRST_PROJECT);
         }
