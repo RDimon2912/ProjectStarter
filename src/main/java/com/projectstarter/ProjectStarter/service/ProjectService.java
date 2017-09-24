@@ -353,8 +353,8 @@ public class ProjectService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProjectDto> findLastCreatedProjects() {
-        List<Project> projectList = projectRepository.findAllOrderByStartDateDescLimitN(8);
+    public List<ProjectDto> findLastCreatedProjects(int offset) {
+        List<Project> projectList = projectRepository.findAllOrderByStartDateDescLimitN(offset, 8);
         List<ProjectDto> projectDtoList = new ArrayList<>();
         for (Project project: projectList) {
             projectDtoList.add(projectTransformer.makeDto(project));
