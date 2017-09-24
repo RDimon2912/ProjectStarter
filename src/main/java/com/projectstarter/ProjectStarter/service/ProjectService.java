@@ -108,10 +108,23 @@ public class ProjectService {
     @Transactional(readOnly = true)
     public ProjectDto findProject(Long projectId) {
         Project project = projectRepository.findById(projectId);
+        checkProjectExpiration(project);
         ProjectDto projectDto = projectTransformer.makeDto(project);
         projectDto.setAmountOfRatings(ratingRepository.countAllByProjectId(project.getId()));
         projectDto.setAmountOfDonates(donateRepository.countAllByProjectId(project.getId()));
         return projectDto;
+    }
+
+    private void checkProjectExpiration(Project project) {
+        Timestamp endTimestamp = project.getEndDate();
+        Timestamp curTimestamp = new Timestamp(System.currentTimeMillis());
+        if (endTimestamp.getTime() - curTimestamp.getTime() <= 0) {
+            if (project.getTargetAmount() - project.getCurrentAmount() > 0) {
+                project.setStatus(ProjectStatus.FAILED);
+            } else {
+                project.setStatus(ProjectStatus.FINISHED);
+            }
+        }
     }
 
     @Transactional(readOnly = true)
