@@ -1,6 +1,10 @@
 package com.projectstarter.ProjectStarter.controller;
 
+import com.projectstarter.ProjectStarter.model.enums.BlockStatus;
+import com.projectstarter.ProjectStarter.repository.UserRepository;
+import com.projectstarter.ProjectStarter.security.model.JwtUserDetails;
 import com.projectstarter.ProjectStarter.service.ProjectService;
+import com.projectstarter.ProjectStarter.service.dto.JsonException;
 import com.projectstarter.ProjectStarter.service.dto.comments.CommentRequestDto;
 import com.projectstarter.ProjectStarter.service.dto.comments.CommentsDto;
 import com.projectstarter.ProjectStarter.service.dto.goal.GoalDto;
@@ -18,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +34,7 @@ import java.util.List;
 public class ProjectController {
 
     private final ProjectService projectService;
+    private final UserRepository userRepository;
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CONFIRMED_USER')")
     @PostMapping(value = "/create")
@@ -36,6 +42,7 @@ public class ProjectController {
     public ProjectCreateResponseDto create(
             @RequestBody final ProjectCreateRequestDto projectCreateRequestDto
     ) {
+        checkIsFrontUserBlocked();
         return projectService.create(projectCreateRequestDto);
     }
 
@@ -51,6 +58,7 @@ public class ProjectController {
     public ProjectDto update(
             @RequestBody final ProjectDto projectDto
     ) {
+        checkIsFrontUserBlocked();
         return projectService.update(projectDto);
     }
 
@@ -61,6 +69,7 @@ public class ProjectController {
             @RequestBody final NewsDto newsDto,
             HttpServletRequest request
     ) {
+        checkIsFrontUserBlocked();
         return projectService.createNews(newsDto, request);
     }
 
@@ -71,6 +80,7 @@ public class ProjectController {
             @RequestBody final RewardsDto rewardsDto,
             HttpServletRequest request
     ) {
+        checkIsFrontUserBlocked();
         return projectService.createReward(rewardsDto, request);
     }
 
@@ -80,6 +90,7 @@ public class ProjectController {
     public GoalDto createGoal(
             @RequestBody final GoalDto goalDto
     ) {
+        checkIsFrontUserBlocked();
         return projectService.createGoal(goalDto);
     }
 
@@ -115,6 +126,7 @@ public class ProjectController {
     public SubscribeResponseDto subscribe(
             @RequestBody final SubscribeRequestDto subscribeRequestDto
     ) {
+        checkIsFrontUserBlocked();
         return projectService.subscribe(subscribeRequestDto);
     }
 
@@ -125,6 +137,7 @@ public class ProjectController {
     public boolean addComment(
             @RequestBody final CommentRequestDto commentRequestDto
     ) {
+        checkIsFrontUserBlocked();
         return projectService.addComment(commentRequestDto);
     }
 
@@ -134,6 +147,7 @@ public class ProjectController {
     public ResponseRatingDto addRating(
             @RequestBody final RatingRequestDto ratingRequestDto
     ) {
+        checkIsFrontUserBlocked();
         return projectService.addRating(ratingRequestDto);
     }
 
@@ -145,6 +159,7 @@ public class ProjectController {
             @RequestParam("user_id") Long userId,
             @RequestParam("project_id") Long projectId
     ) {
+        checkIsFrontUserBlocked();
         return projectService.subscription(userId, projectId);
     }
 
@@ -166,6 +181,7 @@ public class ProjectController {
     public boolean payment(
             @RequestBody final PaymentRequestDto paymentRequestDto
     ) {
+        checkIsFrontUserBlocked();
         return projectService.pay(paymentRequestDto);
     }
 
@@ -176,6 +192,13 @@ public class ProjectController {
             @RequestParam("offset") int offset
     ) {
         return projectService.search(requestString, offset);
+    }
+
+    private void checkIsFrontUserBlocked() {
+        JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (userRepository.findById(userDetails.getId()).getBlockStatus() == BlockStatus.BLOCKED) {
+            throw new JsonException("You are Blocked");
+        }
     }
 }
 

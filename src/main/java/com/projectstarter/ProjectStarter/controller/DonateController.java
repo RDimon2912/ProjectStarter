@@ -15,6 +15,7 @@ import java.util.List;
 @RequestMapping(value = "/donate", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class DonateController {
+
     private final DonateService donateService;
     private final UserService userService;
 

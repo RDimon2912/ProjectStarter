@@ -17,7 +17,6 @@ import java.util.List;
 public class DonateService {
 
     private final DonateRepository donateRepository;
-
     private final DonateTransformer donateTransformer;
 
     @Transactional(readOnly = true)

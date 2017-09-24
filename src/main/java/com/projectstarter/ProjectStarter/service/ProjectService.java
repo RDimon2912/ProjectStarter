@@ -3,6 +3,7 @@ package com.projectstarter.ProjectStarter.service;
 import com.projectstarter.ProjectStarter.model.*;
 import com.projectstarter.ProjectStarter.model.DonateSystem;
 import com.projectstarter.ProjectStarter.model.enums.AchievementName;
+import com.projectstarter.ProjectStarter.model.enums.BlockStatus;
 import com.projectstarter.ProjectStarter.model.enums.Role;
 import com.projectstarter.ProjectStarter.repository.*;
 import com.projectstarter.ProjectStarter.repository.fulltextsearch.FullTextReposiroty;
@@ -74,21 +75,6 @@ public class ProjectService {
     private final RewardTransformer rewardTransformer;
     private final DonateTransformer donateTransformer;
     private final RatingTransformer ratingTransformer;
-    private final ProjectListTransformer projectListTransformer;
-
-    @Transactional(readOnly = true)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public List<ProjectListDto> findAllProjects() {
-        List<Project> projects = projectRepository.findAll();
-        List<ProjectListDto> projectListDto = new ArrayList<>();
-
-        for (Project project : projects) {
-            ProjectListDto dto = this.projectListTransformer.makeDto(project);
-            projectListDto.add(dto);
-        }
-
-        return projectListDto;
-    }
 
     public ProjectCreateResponseDto create(ProjectCreateRequestDto projectCreateRequestDto) {
         Project project = new Project();
