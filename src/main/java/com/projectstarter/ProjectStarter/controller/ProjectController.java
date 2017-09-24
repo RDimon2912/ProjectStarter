@@ -163,13 +163,15 @@ public class ProjectController {
         return projectService.subscription(userId, projectId);
     }
 
-    @GetMapping(value = "/last_created")
+    @GetMapping(value = "/last-created")
     @ResponseStatus(value = HttpStatus.OK)
-    public List<ProjectDto> findLastCreatedProjects() {
-        return projectService.findLastCreatedProjects();
+    public List<ProjectDto> findLastCreatedProjects(
+            @RequestParam("offset") int offset
+    ) {
+        return projectService.findLastCreatedProjects(offset);
     }
 
-    @GetMapping(value = "/successfully_financed")
+    @GetMapping(value = "/successfully-financed")
     @ResponseStatus(value = HttpStatus.OK)
     public List<ProjectDto> findSuccessfullyFinancedProjects() {
         return projectService.findSuccessfullyFinancedProjects();

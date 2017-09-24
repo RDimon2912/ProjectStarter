@@ -15,8 +15,12 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     int countAllByUserId(long userId);
     List<Project> findAllByUserIdOrderByStartDateDesc(Long userId);
 
-    @Query(value = "SELECT * FROM projects ORDER BY start_date DESC LIMIT :limit", nativeQuery = true)
-    List<Project> findAllOrderByStartDateDescLimitN(@Param("limit") int limit);
+    @Query(value = "SELECT * FROM projects ORDER BY start_date DESC " +
+            "LIMIT :offset, :limit", nativeQuery = true)
+    List<Project> findAllOrderByStartDateDescLimitN(
+            @Param("offset") int offset,
+            @Param("limit") int limit
+    );
 
     @Query(value = "SELECT * FROM projects p WHERE p.status = :status ORDER BY end_date DESC LIMIT :limit",
             nativeQuery = true)
