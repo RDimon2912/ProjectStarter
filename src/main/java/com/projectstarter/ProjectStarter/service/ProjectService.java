@@ -105,7 +105,6 @@ public class ProjectService {
         }
     }
 
-    @Transactional(readOnly = true)
     public ProjectDto findProject(Long projectId) {
         Project project = projectRepository.findById(projectId);
         checkProjectExpiration(project);
@@ -124,6 +123,7 @@ public class ProjectService {
             } else {
                 project.setStatus(ProjectStatus.FINISHED);
             }
+            project = projectRepository.saveAndFlush(project);
         }
     }
 
@@ -171,10 +171,13 @@ public class ProjectService {
                 projectDto.getUserId(),
                 "You don't have permission for editing this project."
         );
-
-        Project project = projectTransformer.makeObject(projectDto);
-        project = projectRepository.saveAndFlush(project);
-        clearUnusedTags();
+        Project projectDB = projectRepository.findById(projectDto.getId());
+        Project project = null;
+        if ((projectDB.getStatus() != ProjectStatus.FAILED) && (projectDB.getStatus() != ProjectStatus.FINISHED)) {
+            project = projectTransformer.makeObject(projectDto);
+            project = projectRepository.saveAndFlush(project);
+            clearUnusedTags();
+        }
 
         return projectTransformer.makeDto(project);
     }
