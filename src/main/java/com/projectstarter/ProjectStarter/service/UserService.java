@@ -5,6 +5,7 @@ import com.projectstarter.ProjectStarter.model.enums.AchievementName;
 import com.projectstarter.ProjectStarter.model.enums.BlockStatus;
 import com.projectstarter.ProjectStarter.model.enums.Role;
 import com.projectstarter.ProjectStarter.repository.*;
+import com.projectstarter.ProjectStarter.security.model.JwtUserDetails;
 import com.projectstarter.ProjectStarter.service.dto.achievements.AchievementDto;
 import com.projectstarter.ProjectStarter.service.dto.admin.UserListDto;
 import com.projectstarter.ProjectStarter.service.dto.news.NewsDto;
@@ -13,6 +14,7 @@ import com.projectstarter.ProjectStarter.service.dto.user.BiographyDto;
 import com.projectstarter.ProjectStarter.service.transformer.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +35,7 @@ public class UserService {
     private final ProjectRepository projectRepository;
     private final SubscribeRepository subscribeRepository;
     private final NewsRepository newsRepository;
+    private final RatingRepository ratingRepository;
 
     private final AchievementTransformer achievementTransformer;
     private final UserListTransformer userListTransformer;
@@ -195,5 +198,18 @@ public class UserService {
         achievement.setDate(null);
         achievement.setAchievementName(achievementName);
         return achievement;
+    }
+
+    public int findUserRating(Long projectId) {
+        int userRating = 0;
+        JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (userDetails != null) {
+            Rating rating = ratingRepository.findByUserIdAndProjectId(userDetails.getId(), projectId);
+            if (rating != null) {
+                userRating = rating.getScore();
+            }
+        }
+        System.out.println(userRating);
+        return userRating;
     }
 }

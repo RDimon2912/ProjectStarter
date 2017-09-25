@@ -73,6 +73,13 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_WAIT_CONFIRM', 'ROLE_CONFIRMED_USER', 'ROLE_ADMIN')")
+    @GetMapping(value = "/user-rating")
+    @ResponseStatus(value = HttpStatus.OK)
+    public int findUserRating( @RequestParam("project_id") Long projectId) {
+        return userService.findUserRating(projectId);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_WAIT_CONFIRM', 'ROLE_CONFIRMED_USER', 'ROLE_ADMIN')")
     @GetMapping(value = "/subscribed-projects")
     @ResponseStatus(value = HttpStatus.OK)
     public List<ProjectDto> subscribedProjects(@RequestParam("user_id") Long userId) {
