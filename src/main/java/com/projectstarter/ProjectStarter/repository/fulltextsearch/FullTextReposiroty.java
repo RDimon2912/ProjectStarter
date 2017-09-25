@@ -46,6 +46,6 @@ public class FullTextReposiroty {
                                                         "goalList.goalText",
                                                         "donateSystemList.description",
                                                         "tags.tagName")
-                .matching(searchQuery + '*').createQuery();
+                .matching( '*' + searchQuery + '*').createQuery();
     }
 }
