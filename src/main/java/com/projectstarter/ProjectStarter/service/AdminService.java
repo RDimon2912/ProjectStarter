@@ -74,10 +74,7 @@ public class AdminService {
                 }
             } else {
                 List<Comments> commentsList = commentRepository.findAllByUserId(userId);
-                for (Comments comment:
-                        commentsList) {
-                    commentRepository.delete(comment);
-                }
+                commentRepository.delete(commentsList);
             }
             if (!projects) {
                 List<Project> projectList = projectRepository.findAllByUserId(userId);
@@ -88,10 +85,7 @@ public class AdminService {
                 }
             } else {
                 List<Project> projectList = projectRepository.findAllByUserId(userId);
-                for (Project project:
-                        projectList) {
-                    projectRepository.delete(project);
-                }
+                projectRepository.delete(projectList);
             }
             if (!ratings) {
                 List<Rating> ratingList = ratingRepository.findAllByUserId(userId);
@@ -102,12 +96,8 @@ public class AdminService {
                 }
             } else {
                 List<Rating> ratingList = ratingRepository.findAllByUserId(userId);
-                for (Rating rating:
-                        ratingList) {
-                    ratingRepository.delete(rating);
-                }
+                ratingRepository.delete(ratingList);
             }
-
             userRepository.delete(curUser);
         }
         return true;
