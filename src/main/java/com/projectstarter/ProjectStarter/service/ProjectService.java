@@ -381,7 +381,7 @@ public class ProjectService {
     @Transactional(readOnly = true)
     public List<ProjectDto> findSuccessfullyFinancedProjects() {
         List<Project> projectList = projectRepository.findAllByStatusNameOrderByEndDateDescLimitN(
-                ProjectStatus.FINANCED.name(), 8);
+                ProjectStatus.FINANCED.name(), ProjectStatus.FINISHED.name(), 8);
         List<ProjectDto> projectDtoList = new ArrayList<>();
         for (Project project: projectList) {
             projectDtoList.add(projectTransformer.makeDto(project));
